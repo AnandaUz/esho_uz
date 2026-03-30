@@ -19,7 +19,6 @@ function enableDebug() {
 function disableDebug() {
     localStorage.removeItem('no_analytics');
     updateStatus();
-
 }
 export const adminPage: Page = () => {
   return {
