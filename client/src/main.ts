@@ -83,10 +83,10 @@ function sendTrackingEvent(eventName: string) {
         body: JSON.stringify(params)
     }).catch(err => console.log('Tracking error:', err));
 }
-function formatDate (dateStr: string) {
-    const [y, m, d] = dateStr.split('-');
-    return `${d}.${m}.${y}`;
-};
+// function formatDate (dateStr: string) {
+//     const [y, m, d] = dateStr.split('-');
+//     return `${d}.${m}.${y}`;
+// };
 
 
 
