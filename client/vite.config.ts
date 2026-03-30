@@ -5,18 +5,7 @@ import { resolve } from 'path';
 export default defineConfig({  
   css: {
       devSourcemap: true,
-  },
-  server: {
-    
-    proxy: {
-      // Все запросы, начинающиеся с /api, будут перенаправлены на сервер
-      '/api': {
-        target: 'http://localhost:3000', // Адрес твоего Node.js сервера
-        changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/api/, '') // Убирает /api из пути перед отправкой
-      }
-    }
-  },
+  },  
   resolve: {
     alias: {
       // Теперь символ @ заменяет путь до папки src
@@ -31,5 +20,14 @@ export default defineConfig({
   },
   build: {
     assetsInlineLimit: 4096, // файлы меньше 4kb встраиваются как base64
+    rollupOptions: {
+      output: {
+        manualChunks(id) {
+          if (id.includes('node_modules')) {
+            return 'vendor';
+          }
+        }
+      }
+    }
   }
 });
