@@ -1,11 +1,14 @@
 import type { Page, Routes } from './types';
-import { homePage } from './pages/home';
-import { settingsPage } from './pages/settings';
+
 import { notFoundPage } from './pages/notFound';
 
+
 const routes: Routes = {
-  '/':          homePage,
-  '/settings':  settingsPage,
+  '/':               (params) => import('./pages/home/home').then(m => m.homePage(params)),
+  '/admin':          (params) => import('./pages/admin/admin').then(m => m.adminPage(params)),
+  '/meet':           (params) => import('./pages/meet/meet').then(m => m.meetPage(params)),
+  '/privacy-policy': (params) => import('./pages/privacy-policy').then(m => m.privacyPolicyPage(params)),
+
 };
 
 function matchRoute(routes: Routes, path: string): { page: Page; params: Record<string, string> } {
@@ -26,16 +29,16 @@ function matchRoute(routes: Routes, path: string): { page: Page; params: Record<
     if (match) {
       const params: Record<string, string> = {};
       paramNames.forEach((name, i) => {
-        params[name] = match[i + 1];
+        params[name] = match[i + 1] as string;
       });
-      return { page: routes[pattern], params };
+      return { page: routes[pattern] as Page, params };
     }
   }
 
   return { page: notFoundPage, params: {} };
 }
 
-export function render(): void {
+export async function render(): Promise<void> {
   const path = window.location.pathname;
   const { page, params } = matchRoute(routes, path);
 
@@ -43,9 +46,10 @@ export function render(): void {
     const main = document.querySelector('main');
     if (!main) throw new Error('Элемент main не найден в DOM');
 
-    const { html, title, init } = page(params);
+    const result = await page(params);
+    const { html, title, init } = result;
     main.innerHTML = html;
-    document.title = title ?? 'Liner';
+    document.title = 'Ананда' + (title ? ' | ' + title : ' Шадрин');
     init?.();
   } catch (e) {
     console.error('Ошибка роутера:', e);

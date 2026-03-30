@@ -1,29 +1,238 @@
-import express, { Request, Response } from 'express';
+import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
-import { connectDB } from './db';
-import userRoutes from './routes/user.routes';
-import authRoutes from './routes/auth.routes';
-
 
 dotenv.config({ path: '../.env' });
 
 const app = express();
 
 const port = process.env.PORT;
+const BASE_URL = process.env.BASE_URL || 'http://localhost:5173';
 
 app.use(cors({
-    origin: 'http://localhost:5173'
+    origin: BASE_URL
 }));
 app.use(express.json());
 
-app.use('/api/users', userRoutes);
-app.use('/api/auth', authRoutes);
-
-
-
-connectDB();
 
 app.listen(port, () => {
     console.log(`Server is running at http://localhost:${port}`);
 });
+
+app.get("/", (req, res) => {
+    res.render("index", { 
+        title: "Шадрин",
+    });
+});
+
+app.get("/privacy-policy", (req, res) => {
+    res.render("privacy-policy", { title: "| Коучинг" });
+});
+
+app.get(["/guide", "/file"], (req, res) => {
+    res.render("layout", {
+        title: "| Скачать файл",
+        centerPartial: "partials/center-guide"
+    });
+});
+
+const lastVisits = new Map();
+app.get(["/meet"], async (req, res) => {
+
+    const { utm_source, utm_medium, utm_campaign, utm_content, utm_term, fbclid, key1 } = req.query;
+    if (fbclid) {
+        const nowTimestamp = Date.now();
+
+        // 2. Проверка на дубль (если этот ключ уже заходил в последние 30 секунд)
+        if (lastVisits.has(fbclid)) {
+            const lastTime = lastVisits.get(fbclid);
+            if (nowTimestamp - lastTime < 30000) { // 30 секунд
+                console.log("Дубликат запроса проигнорирован");
+                return res.render("layout", {
+                    title: "| Встреча",
+                    centerPartial: "partials/center-meet"
+                });
+            }
+        }
+
+        // Сохраняем текущий визит в память
+        lastVisits.set(fbclid, nowTimestamp);
+
+        // Очистка старых записей (чтобы память не росла бесконечно)
+        if (lastVisits.size > 100) {
+            const firstKey = lastVisits.keys().next().value;
+            lastVisits.delete(firstKey);
+        }
+
+        // 1. Собираем данные из запроса
+        const userAgent = req.headers['user-agent'] || "Unknown device";
+        const isMobile = /Mobile|Android|iPhone/i.test(userAgent) ? "📱" : "💻";
+
+        // 2. Достаем язык (поможет понять, откуда примерно человек)
+        const language = req.headers['accept-language']?.split(',')[0] || "Не определен";
+
+        const referer = req.headers['referer'] || "🌸";
+
+        const ua = req.headers['user-agent'];
+        const { browser, version, os } = parseUserAgent(ua);
+
+        const browserName = `${browser}${ (version !== '')?('-'+version):''} ${os}`
+
+
+        const now = new Date();
+        const tashkentTime = new Date(now.getTime() + (5 * 60 * 60 * 1000)); // +5 часов
+        const dateStr = tashkentTime.toISOString()
+            .replace(/(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}).*/, '$3.$2.$1 $4:$5');
+
+        // const rawParts = [utm_source, utm_medium, utm_campaign, utm_content, utm_term, key1];
+        const rawParts = [ utm_campaign, key1];
+        const filteredParts = rawParts.filter(Boolean);
+
+        const uniqueParts = [...new Set(filteredParts)];
+
+        const utmString = uniqueParts.join(" 🔅 ");
+
+        const fbInfo = fbclid ? ` ${fbclid.slice(-6)}` : "";
+
+// Формируем финальный блок для маркетинга
+        let marketingInfo = "";
+        if (utmString || fbInfo) {
+            marketingInfo = `\n🎯  ${utmString || "Без UTM"}${fbInfo ? `\n${fbInfo}` : ""}`;
+        }
+        // Формируем "радующую" сводку
+        const message = `${dateStr} ${isMobile} ${language} 🔸 ${browserName} 🔸 ${referer} ${marketingInfo}`;
+
+        await sendMessageToAdmin(message);
+    }
+
+
+    res.render("layout", {
+        title: "| Встреча",
+        centerPartial: "partials/center-meet"
+    });
+});
+app.post("/api/track-visit", async (req, res) => {
+    try {
+        const data = req.body; // Данные придут из fetch
+        const { fbclid, event_name, page_path } = data;
+
+        const fbInfo = fbclid ? `${fbclid.slice(-6)}` : "кто-то";
+
+        const message = `${fbInfo} 🔅 ${event_name} 🔅 ${page_path}`;
+
+        await sendMessageToAdmin(message);
+
+        res.json({ status: 'ok' });
+    } catch (e) {
+        console.error(e);
+        res.status(500).json({ status: 'error' });
+    }
+});
+app.get(["/texts/:slug", "/texts/:slug/:page"], (req, res) => {
+    const article = articles.find(a => a.slug === req.params.slug);
+    if (article) {
+        let currentPage = parseInt(req.params.page) || 1;
+        let contentPartial = article.contentPartial;
+        
+        if (article.totalPages) {
+            if (currentPage < 1) currentPage = 1;
+            if (currentPage > article.totalPages) currentPage = article.totalPages;
+            contentPartial = `${article.contentPartial}_${currentPage}`;
+        }
+
+        res.render("article", { 
+            title: `| ${article.title}`, 
+            article: article,
+            currentPage: currentPage,
+            contentPartial: contentPartial
+        });
+    } else {
+        res.status(404).send("Статья не найдена");
+    }
+});
+
+// маршрут для Telegram
+app.post("/api/bot", api);
+
+app.post("/api/submit-form", async (req, res) => {
+    const { userName, userContact } = req.body;
+    
+    if (!userName || !userContact) {
+        return res.status(400).json({ success: false, error: "Missing fields" });
+    }
+
+    const message = `📩 <b>Новая заявка с сайта (Встреча)</b>\n\nИмя: ${userName}\nКонтакт: ${userContact}`;
+    
+    const result = await sendMessageToAdmin(message);
+    
+    if (result.success) {
+        res.json({ success: true });
+    } else {
+        res.status(500).json({ success: false, error: result.error });
+    }
+});
+
+//+bot ISeeWeight
+
+
+function parseUserAgent(ua) {
+    if (!ua) return { browser: 'Unknown', version: 'Unknown', os: 'Unknown' };
+
+    const browsers = [
+        { name: 'Edge',            regex: /Edg\/([0-9.]+)/ },
+        { name: 'Opera',           regex: /OPR\/([0-9.]+)/ },
+        { name: 'Opera Legacy',    regex: /Opera\/([0-9.]+)/ },
+        { name: 'Yandex Browser',  regex: /YaBrowser\/([0-9.]+)/ },
+        { name: 'Samsung Browser', regex: /SamsungBrowser\/([0-9.]+)/ },
+        { name: 'UC Browser',      regex: /UCBrowser\/([0-9.]+)/ },
+        { name: 'Firefox',         regex: /Firefox\/([0-9.]+)/ },
+        { name: 'Chrome',          regex: /Chrome\/([0-9.]+)/ },
+        { name: 'Safari',          regex: /Version\/([0-9.]+).*Safari/ },
+    ];
+
+    const os = [
+        { name: 'Windows 11/10', regex: /Windows NT 10\.0/ },
+        { name: 'Windows 8.1',   regex: /Windows NT 6\.3/ },
+        { name: 'Windows 8',     regex: /Windows NT 6\.2/ },
+        { name: 'Windows 7',     regex: /Windows NT 6\.1/ },
+        { name: 'macOS',         regex: /Mac OS X ([0-9_]+)/ },
+        { name: 'iPhone (iOS)',  regex: /iPhone OS ([0-9_]+)/ },
+        { name: 'iPad (iOS)',    regex: /iPad.*OS ([0-9_]+)/ },
+        { name: 'Android',       regex: /Android ([0-9.]+)/ },
+        { name: 'Linux',         regex: /Linux/ },
+    ];
+
+    // Определяем браузер (порядок важен — Edge/Opera идут до Chrome)
+    let browser = '', version = '';
+    for (const b of browsers) {
+        const match = ua.match(b.regex);
+        if (match) {
+            browser = b.name;
+            version = match[1].split('.')[0]; // только мажорная версия
+            break;
+        }
+    }
+
+    // Определяем ОС
+    let detectedOS = '';
+    for (const o of os) {
+        const match = ua.match(o.regex);
+        if (match) {
+            detectedOS = o.name;
+            // Для macOS/iOS заменяем _ на . в версии
+            if (match[1]) {
+                const osVersion = match[1].replace(/_/g, '.');
+                detectedOS += ` ${osVersion}`;
+            }
+            break;
+        }
+    }
+
+    return { browser, version, os: detectedOS };
+}
+
+//-bot ISeeWeight
+app.listen(port, () => {
+    console.log(`Server running on port ${port}`);
+});
+

@@ -1,29 +1,93 @@
-import '@styles/style.scss'
-import { render } from './router';
 
-import { renderHeader } from './components/header'; // добавить
-import { renderFooter } from './components/footer'; // добавить
+window.addEventListener("load", () => {  
+     
+    const meetForm = document.getElementById('meetForm') as HTMLFormElement | null;
+    const formMessage = document.getElementById('formMessage') as HTMLElement | null;
 
+    if (meetForm && formMessage) {
+        meetForm.addEventListener('submit', async (event) => {
+            event.preventDefault();
 
+            const formData = new FormData(meetForm);
+            const data = {
+                userName: formData.get('userName'),
+                userContact: formData.get('userContact')
+            };
 
+            try {
+                const response = await fetch(import.meta.env.VITE_API_URL + '/api/submit-form', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                });
 
-async function init() {
-  renderHeader();
-  renderFooter();
-  render();
+                const result = await response.json();
+
+                if (typeof window.fbq === 'function') {
+                    fbq('track', 'Lead', {value: 1.00, currency: 'USD', content_name: 'meet_form'});
+                }
+
+                if (result.success) {
+                    meetForm.style.display = 'none';
+                    formMessage.style.display = 'block';
+                } else {
+                    alert('Произошла ошибка при отправке заявки. Попробуйте еще раз.');
+                }
+            } catch (error) {
+                console.error('Error submitting form:', error);
+                alert('Произошла ошибка при отправке заявки.');
+            }
+        });
+    }
+    {
+        const timers = [
+            { ms: 1000,  label: "1с" },
+            { ms: 3000, label: "3с" },
+            { ms: 5000, label: "5с" },
+            { ms: 10000, label: "10с" },
+            { ms: 30000, label: "30с" },
+            { ms: 50000, label: "50с" }
+        ];
+        // 3. Запускаем циклом
+        timers.forEach(timer => {
+            setTimeout(() => sendTrackingEvent(timer.label), timer.ms);
+        });
+
+        let scrollSent = false;
+        window.addEventListener('scroll', function() {
+            if (scrollSent) return; // Если уже отправили, выходим
+            scrollSent = true;
+            sendTrackingEvent("scroll");
+        });
+    }
+    //событие - загрузка страницы
+    sendTrackingEvent("page_load");
+
+});
+function sendTrackingEvent(eventName: string) {
+
+    const isDebug = localStorage.getItem('no_analytics') === 'true';
+    if (isDebug) return;
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const params = Object.fromEntries(urlParams.entries());
+
+    params.client_referer = document.referrer || "Прямой заход";
+    params.page_path = window.location.pathname;
+    params.event_name = eventName;
+    fetch('/api/track-visit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(params)
+    }).catch(err => console.log('Tracking error:', err));
 }
-init();
+function formatDate (dateStr: string) {
+    const [y, m, d] = dateStr.split('-');
+    return `${d}.${m}.${y}`;
+};
 
-document.addEventListener('click', (e) => {
-  const target = e.target as HTMLAnchorElement;
-  
-  if (target.tagName === 'A' && target.href.startsWith(window.location.origin)) {
-    e.preventDefault();
-    history.pushState({}, '', target.href);    
-  }
-});
 
-// Обрабатываем кнопки браузера "назад" / "вперёд"
-window.addEventListener('popstate', () => {
-  
-});
+
+
