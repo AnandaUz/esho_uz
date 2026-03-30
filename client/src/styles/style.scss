@@ -1,6 +1,5 @@
 @use "./breakpoints";
 :root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;  
 }
@@ -11,6 +10,30 @@
 }
 :root {
   --darkBlue: rgba(0, 46, 80, 0.95);
+}
+/* montserrat-regular - latin */
+@font-face {
+  font-display: swap; /* Check https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face/font-display for other options. */
+  font-family: 'Montserrat';
+  font-style: normal;
+  font-weight: 400;
+  src: url('@assets/fonts/montserrat-v31-latin-regular.woff2') format('woff2'); /* Chrome 36+, Opera 23+, Firefox 39+, Safari 12+, iOS 10+ */
+}
+/* montserrat-italic - latin */
+@font-face {
+  font-display: swap; /* Check https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face/font-display for other options. */
+  font-family: 'Montserrat';
+  font-style: italic;
+  font-weight: 400;
+  src: url('@assets/fonts/montserrat-v31-latin-italic.woff2') format('woff2'); /* Chrome 36+, Opera 23+, Firefox 39+, Safari 12+, iOS 10+ */
+}
+/* montserrat-600 - latin */
+@font-face {
+  font-display: swap; /* Check https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face/font-display for other options. */
+  font-family: 'Montserrat';
+  font-style: normal;
+  font-weight: 600;
+  src: url('@assets/fonts/montserrat-v31-latin-600.woff2') format('woff2'); /* Chrome 36+, Opera 23+, Firefox 39+, Safari 12+, iOS 10+ */
 }
 
 /* Базовые настройки */
@@ -90,7 +113,7 @@ h1 {
   color: rgba(255, 68, 0, 0.75);
   font-size: 28px;
   text-align: center;
-  font-weight: normal;
+  font-weight: 400;
   position: relative;
   line-height: 0.9;
   padding: 0 2px 4px;
@@ -166,7 +189,7 @@ h1 {
     margin: 0;
     color: #fff;
     padding: 8px 0;
-    font-weight: normal;
+    font-weight: 400;
     text-align: center;
     &:before {
       display: none;
@@ -288,7 +311,7 @@ h1 {
 }
 h3 {
   font-size: 22px;
-  font-weight: normal;
+  font-weight: 400;
   margin: 0;
   padding: 15px 0 10px;
   color: var(--darkBlue);
@@ -413,7 +436,7 @@ h1 {
   color: rgba(255, 68, 0, 0.75);
   font-size: 28px;
   text-align: center;
-  font-weight: normal;
+  font-weight: 400;
   position: relative;
   line-height: 0.9;
   padding: 0 2px 4px;
@@ -497,7 +520,7 @@ ul {
   justify-content: right;
   align-content: center;
   padding: 6px 0 11px;
-  font-weight: bold;
+  font-weight: 600;
   .ico {
     background-image: url("@/assets/ico_00.svg");
     background-repeat: no-repeat;
@@ -516,7 +539,7 @@ ul {
     }
     cite {
       font-size: 14px;
-      font-weight: normal;
+      font-weight: 400;
     }
   }
   .quote-text {
@@ -648,7 +671,7 @@ a.anh {
     }
 
     .prev, .next {
-        font-weight: bold;
+        font-weight: 600;
     }
   @include breakpoints.tablet {
     margin-top: 20px;
@@ -703,7 +726,7 @@ a.anh {
   b {
     color: #52696c;
     font-size: 14px;
-    font-weight: normal;
+    font-weight: 400;
   }
 }
 .list_l2 {
@@ -840,7 +863,7 @@ a.MM {
         font-size: 18px;
         padding: 10px;
      display: none;
-      font-weight: bold;
+      font-weight: 600;
       color: #28a745;
     }
 }
