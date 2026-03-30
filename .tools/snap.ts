@@ -1,6 +1,6 @@
-
-//tsx .tools/snap.ts --dir ./server --ext .ts,.json
-//ollama run qwen2.5-coder:7b
+//npx tsx .tools/snap.ts --dir . --ext .ts,.json --days 2
+//npx tsx .tools/snap.ts --dir . --ext .ts --days 2
+//npx tsx .tools/snap.ts --dir ./client --ext .ts 
 
 import fs from "fs";
 import path from "path";
@@ -16,6 +16,7 @@ const REMOVE_EMPTY_LINES = false;
 type Options = {
   root: string;
   exts: string[] | null;
+  days: number | null;
 };
 
 function parseArgs(): Options {
@@ -23,6 +24,7 @@ function parseArgs(): Options {
 
   let root = DEFAULT_ROOT;
   let exts: string[] | null = null;
+  let days: number | null = null;
 
   for (let i = 0; i < args.length; i++) {
     if (args[i] === "--dir") {
@@ -34,9 +36,14 @@ function parseArgs(): Options {
       exts = args[i + 1].split(",").map(v => v.trim());
       i++;
     }
+
+    if (args[i] === "--days") {
+      days = Number(args[i + 1]);
+      i++;
+    }
   }
 
-  return { root, exts };
+  return { root, exts, days };
 }
 
 function loadIgnore(root: string): string[] {
@@ -76,6 +83,13 @@ function shouldInclude(file: string, exts: string[] | null): boolean {
   return exts.includes(path.extname(file));
 }
 
+function isRecent(stat: fs.Stats, days: number | null): boolean {
+  if (!days) return true;
+  const diff = Date.now() - stat.mtime.getTime();
+  const limit = days * 24 * 60 * 60 * 1000;
+  return diff <= limit;
+}
+
 function compress(file: string, content: string): string {
   const ext = path.extname(file);
 
@@ -109,6 +123,7 @@ function walk(
   root: string,
   ignore: string[],
   exts: string[] | null,
+  days: number | null,
   out: string[]
 ) {
   for (const item of fs.readdirSync(dir)) {
@@ -120,11 +135,12 @@ function walk(
     const stat = fs.statSync(full);
 
     if (stat.isDirectory()) {
-      walk(full, root, ignore, exts, out);
+      walk(full, root, ignore, exts, days, out);
       continue;
     }
 
     if (!shouldInclude(full, exts)) continue;
+    if (!isRecent(stat, days)) continue;
 
     let content = fs.readFileSync(full, "utf8");
 
@@ -137,13 +153,13 @@ function walk(
 }
 
 function main() {
-  const { root, exts } = parseArgs();
+  const { root, exts, days } = parseArgs();
 
   const ignore = loadIgnore(root);
 
   const result: string[] = [];
 
-  walk(root, root, ignore, exts, result);
+  walk(root, root, ignore, exts, days, result);
 
   const output = result.join("\n");
 
@@ -153,4 +169,5 @@ function main() {
 
   console.log(`Estimated tokens: ${tokens}`);
 }
+
 main();

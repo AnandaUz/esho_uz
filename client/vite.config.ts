@@ -20,14 +20,6 @@ export default defineConfig({
   },
   build: {
     assetsInlineLimit: 4096, // файлы меньше 4kb встраиваются как base64
-    rollupOptions: {
-      output: {
-        manualChunks(id) {
-          if (id.includes('node_modules')) {
-            return 'vendor';
-          }
-        }
-      }
-    }
+    
   }
 });
