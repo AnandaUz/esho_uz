@@ -28,5 +28,8 @@
   },
   "dependencies": {
     "minimatch": "^10.2.4"
+  },
+  "optionalDependencies": {
+    "@rollup/rollup-linux-x64-gnu": "^4.60.1"
   }
 }
