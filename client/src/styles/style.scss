@@ -1,0 +1,130 @@
+@use "./breakpoints";
+:root {
+  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;  
+}
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+:root {
+  --darkBlue: rgba(0, 46, 80, 0.95);
+}
+
+/* Базовые настройки */
+html {
+  font-size: 16px;
+  scroll-behavior: smooth;
+}
+body {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 400; /* обычный */
+  line-height: 1.2;
+  color: rgba(88, 21, 0, 0.8);
+  font-size: 18px;
+  min-height: 100vh;  
+  min-width: 320px;
+  // background: url('@/assets/bg.png');
+  display: flex;          
+  flex-direction: column; 
+}
+
+.main-container {
+  max-width: 576px;
+  width: 100%;
+  flex: 1;
+  margin: 0 auto;
+  // background: rgb(243 250 253 / 50%) url('@/assets/bg_add.svg') no-repeat center top;
+  display: flex;
+  flex-direction: column;
+  // justify-content: space-between;
+  min-height: 100vh;
+  @include breakpoints.tablet {
+    max-width: 1000px;
+  }
+}
+main {
+  flex-grow: 1;
+  
+}
+footer {
+  flex-shrink: 0;
+  background: rgba(187, 211, 227, 0.66);
+  height: 20px;
+  font-size: 12px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+header {
+  flex-shrink: 0;
+  a {
+    color: #939393;
+    text-decoration: none;
+    &.active {
+      color: #646cff;
+    }
+  }
+  nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: start;
+    padding: 5px;
+  }
+  .logo {
+    // background: url('@assets/i_home.svg') no-repeat center center;
+    background-size: contain;
+    width: 35px;
+    height: 35px;
+    display: inline-block;
+  }
+}
+h1 {
+  color: rgba(255, 68, 0, 0.75);
+  font-size: 28px;
+  text-align: center;
+  font-weight: normal;
+  position: relative;
+  line-height: 0.9;
+  padding: 0 2px 4px;
+
+  &:before {
+    content: "";
+    display: block;
+    position: absolute;
+
+    width: 80%;
+    height: 1px;
+    bottom: 1px;
+
+    background: rgba(89, 0, 0, 0.35);
+  }
+}
+.user-list {
+  a {
+    color: var(--darkBlue);
+  }
+}
+.ul-level {
+  list-style-type: circle;
+  padding: 0 0 0 25px;
+  li {
+    margin-bottom: 5px;
+  }
+  &.l2 {
+    padding: 0 0 0 50px;
+    font-size: 14px;
+  }
+}
+p {
+  margin: 10px 20px;
+}
+
+.center-bl {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
