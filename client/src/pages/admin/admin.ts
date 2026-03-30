@@ -29,9 +29,7 @@ export const adminPage: Page = () => {
 <p class="status">Текущий статус: <strong id="status">проверка...</strong></p>
 
       <button class="btn_big">Включить режим разработчика (Блокировать GTM/Pixel)</button>
-      <button class="btn_big">Выключить режим разработчика (Разрешить отправку)</button>
-
-      
+      <button class="btn_big">Выключить режим разработчика (Разрешить отправку)</button>      
     </div>
     `,
     init() {
