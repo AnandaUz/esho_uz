@@ -1,7 +1,6 @@
 {
   "name": "esho.uz",
   "version": "0.8.0",
-  "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev:client": "npm run dev --workspace=client",
@@ -25,11 +24,5 @@
   "devDependencies": {
     "concurrently": "^9.2.1",
     "typescript": "^5.9.3"
-  },
-  "dependencies": {
-    "minimatch": "^10.2.4"
-  },
-  "optionalDependencies": {
-    "@rollup/rollup-linux-x64-gnu": "^4.60.1"
   }
 }

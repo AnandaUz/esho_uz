@@ -6,7 +6,7 @@ import { sendMessageToAdmin } from './api';
 
 const app = express();
 
-const port = process.env.PORT;
+const PORT = process.env.PORT || 8080;
 const CLIENT_URL = process.env.CLIENT_URL || '';
 
 app.use(cors({
@@ -44,8 +44,8 @@ app.post("/submit-form", async (req, res) => {
     }
 });
 
-app.listen(port, () => {
-    console.log(`Server is running at http://localhost:${port}`);
+app.listen(PORT, () => {
+    console.log(`Server is running at http://localhost:${PORT}`);
 });
 
 

@@ -1,7 +1,7 @@
 {
   "buildCommand": "npm run build:client",
   "outputDirectory": "client/dist",
-  "installCommand": "npm install --include=optional --no-audit",
+  "installCommand": "npm install --no-audit",
   "rewrites": [
     { "source": "/(.*)", "destination": "/index.html" }
   ]
