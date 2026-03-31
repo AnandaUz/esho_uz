@@ -68,9 +68,13 @@ a {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-  background: #F0FBFF url('@/assets/bgmain.png') no-repeat top center;
-  background-size: cover;
+  background: url("@/assets/bg-circle.svg"),#F0FBFF url('@/assets/bgmain.png') no-repeat top center;
+  background-size: 1073px, cover;
+  background-position: right -440px top -462px, 0 0;
+  background-repeat: no-repeat;
   @include breakpoints.tablet {
+    background-size: 1073px, cover;
+    background-position: right -440px top -462px, 0 0;
     max-width: 800px;
   }
 }
@@ -156,11 +160,23 @@ h1 {
 }
 .top {
   position: relative ;
-  background-position: right -180px top -15px;
-  background-repeat: no-repeat;
-  background-image: url("@/assets/photo.png");
+  // background-position: right -180px top -15px;
+  // background-repeat: no-repeat;
+  // background-image: url("@/assets/photo-ananda.jpg");
+  
   height: 335px;
   margin: 0 0 -55px;
+
+  img {
+    clip-path: circle(436px at 100px 200px);
+    width: 318px;
+    height: 295px;
+    object-fit: cover;
+    position: absolute;
+    right: 0;
+    top: 0;
+    clip-path: circle(218px at 70% 26%);
+  }
 
   @include breakpoints.tablet {
     background-position: right 15px top;
