@@ -1,4 +1,5 @@
-@use "./breakpoints";
+@use "@styles/breakpoints";
+
 :root {
   line-height: 1.5;
   font-weight: 400;  
@@ -68,9 +69,9 @@ a {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-  background: url("@/assets/bg-circle.svg"),#F0FBFF url('@/assets/bgmain.png') no-repeat top center;
+  background: url("@/assets/bg-circle.svg"),#F0FBFF url('@/assets/bg-center.jpg') no-repeat top center;
   background-size: 1073px, cover;
-  background-position: right -440px top -462px, 0 0;
+  background-position: right -501px top -500px, 0 0;
   background-repeat: no-repeat;
   @include breakpoints.tablet {
     background-size: 1073px, cover;
@@ -158,74 +159,53 @@ h1 {
   justify-content: center;
   align-items: center;
 }
-.top {
-  position: relative ;
-  // background-position: right -180px top -15px;
-  // background-repeat: no-repeat;
-  // background-image: url("@/assets/photo-ananda.jpg");
-  
-  height: 335px;
-  margin: 0 0 -55px;
 
-  img {
-    clip-path: circle(436px at 100px 200px);
-    width: 318px;
-    height: 295px;
-    object-fit: cover;
-    position: absolute;
-    right: 0;
-    top: 0;
-    clip-path: circle(218px at 70% 26%);
-  }
-
-  @include breakpoints.tablet {
-    background-position: right 15px top;
-  }
-}
 .cont {
-  margin: -105px 0 0 ;
+  position: relative;
 }
-.meet {
-  .top {
-    background-position: right -180px top -44px;
-    margin:0 0 -165px;
-    height: 290px;
-  }
-  .name {
-    top: 71px;
-    height: 26px;
-    font-size: 18px;
-    right: auto;
-    left: -5px;
-    padding: 4px 8px 4px 13px;
-  }
+.home-page {
   .cont {
-    margin: 0 ;
-    position: relative;
+    margin: 100px 0 0;
   }
-  h1, h2 {
-    background: rgba(255, 68, 0, 0.7);
-    margin: 0;
-    color: #fff;
-    padding: 8px 0;
-    font-weight: 400;
-    text-align: center;
-    &:before {
-      display: none;
-    }
-    @include breakpoints.tablet {
-      background:none;
-      color: rgba(255, 68, 0, 0.75);
-    }
+}
+h1, h2 {
+  background: rgba(255, 68, 0, 0.7);
+  margin: 0;
+  color: #fff;
+  padding: 8px 0;
+  font-weight: 400;
+  text-align: center;
+  &:before {
+    display: none;
+  }
+  @include breakpoints.tablet {
+    background:none;
+    color: rgba(255, 68, 0, 0.75);
 
+    &:before {
+    content: "";
+    display: block;
+    position: absolute;
+
+    width: 80%;
+    height: 1px;
+    bottom: 1px;
+
+    background: rgba(89, 0, 0, 0.35);
   }
-  h2 {
-    font-size: 19px;
-    padding: 0 7px 10px;
-    position: relative;
-    margin: 0 0 10px;
-    line-height: 1;
   }
+
+}
+h2 {
+  font-size: 19px;
+  padding: 0 7px 10px;
+  position: relative;
+  margin: 0 0 10px;
+  line-height: 1;
+}
+
+.meet {  
+  
   .bl-00 {
     //font-size: 20px;
     margin: 5px 0px;
@@ -261,73 +241,6 @@ h1 {
   }
 }
 
-.b00 {
-  color: rgba(64, 19, 0, 0.75);
-  font-size: 19px;
-  text-align: center;
-  height: 25px;
-  line-height: 19px;
-
-}
-.b01 {
-  color: #862A03;
-  font-size: 20px;
-  padding: 25px 0 0 55px;
-  line-height: 19px;
-  span {
-    display: block;
-    text-indent: -40px;
-
-    padding: 0 150px 7px 0;;
-    @include breakpoints.tablet {
-      padding: 0 0 25px 15px;
-    }
-
-
-    &.i {
-      color: rgba(0, 46, 80, 0.96);
-      padding-left: 0;
-      font-size: 24px;
-      padding-top: 0;
-
-      @include breakpoints.tablet {
-        padding-left: 40px;
-      }
-    }
-
-  }
-}
-.home_anh {
-
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  .home {
-    background: url("@/assets/ico_02.svg") no-repeat;
-    width: 34px;
-    height: 28px;
-    display: block;
-    margin: 0 0 0 10px;
-    background-size: 30px;
-  }
-
-}
-.name {
-  background: rgba(255, 68, 0, 0.65);
-  height: 37px;
-  color: #fffe;
-  font-size: 27px;
-  position: absolute;
-  top: 200px;
-  right: 0;
-  padding: 4px 8px;
-  a {
-    color: #fffe;
-    &:hover {
-      color: #fff;
-    }
-  }
-}
 h3 {
   font-size: 22px;
   font-weight: 400;
@@ -451,45 +364,8 @@ footer {
     margin-bottom: 0;
   }
 }
-h1 {
-  color: rgba(255, 68, 0, 0.75);
-  font-size: 28px;
-  text-align: center;
-  font-weight: 400;
-  position: relative;
-  line-height: 0.9;
-  padding: 0 2px 4px;
 
-  &:before {
-    content: "";
-    display: block;
-    position: absolute;
 
-    width: 80%;
-    height: 1px;
-    bottom: 1px;
-
-    background: rgba(89, 0, 0, 0.35);
-  }
-}
-.contPage {
-  .top {
-    position: relative;
-    height: 85px;
-  }
-  .name {
-    position: static;
-    float: right;
-    font-size: 22px;
-    height: 30px;
-    margin: 6px 0 0;
-    background: rgba(255, 68, 0, 0.7);
-    padding: 4px 15px;
-    &:hover {
-      background: rgba(255, 68, 0, 1);
-    }
-  }
-}
 .blM1 {
   color: var(--darkBlue);
   font-size: 20px;

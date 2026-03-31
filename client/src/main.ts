@@ -68,8 +68,8 @@ window.addEventListener("load", () => {
 });
 function sendTrackingEvent(eventName: string) {
 
-    const isDebug = localStorage.getItem('no_analytics') === 'true';
-    if (isDebug) return;
+    const off_MyStat = localStorage.getItem('off_MyStat') === 'true';
+    if (off_MyStat) return;
 
     const urlParams = new URLSearchParams(window.location.search);
     const params = Object.fromEntries(urlParams.entries());

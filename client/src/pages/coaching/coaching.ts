@@ -1,15 +1,15 @@
 import type { Page } from '../../types';
-import "./meet.scss";
-import html from "./meet.html?raw";
+import "./coaching.scss";
+import html from "./coaching.html?raw";
 import { CTop } from '@/components/top/c-top';
 
-export const meetPage: Page = () => {
+export const coachingPage: Page = () => {
   return {
     html: html,
     init() {
       
       
     },
-    title: 'Встреча'
+    title: 'Коучинг'
   };
 }

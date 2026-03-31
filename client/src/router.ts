@@ -8,6 +8,7 @@ const routes: Routes = {
   '/admin':          (params) => import('./pages/admin/admin').then(m => m.adminPage(params)),
   '/meet':           (params) => import('./pages/meet/meet').then(m => m.meetPage(params)),
   '/privacy-policy': (params) => import('./pages/privacy-policy').then(m => m.privacyPolicyPage(params)),
+  '/coaching': (params) => import('./pages/coaching/coaching').then(m => m.coachingPage(params)),
 
 };
 
@@ -47,10 +48,14 @@ export async function render(): Promise<void> {
     if (!main) throw new Error('Элемент main не найден в DOM');
 
     const result = await page(params);
-    const { html, title, init } = result;
+    const { html, title, init, pageClass } = result;
     main.innerHTML = html;
     document.title = 'Ананда' + (title ? ' | ' + title : ' Шадрин');
     init?.();
+    if (pageClass) {
+      document.body.className = '';
+      document.body.classList.add(pageClass);
+    }
   } catch (e) {
     console.error('Ошибка роутера:', e);
   }
