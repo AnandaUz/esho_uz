@@ -52,8 +52,8 @@ export async function render(): Promise<void> {
     main.innerHTML = html;
     document.title = 'Ананда' + (title ? ' | ' + title : ' Шадрин');
     init?.();
+    document.body.className = '';
     if (pageClass) {
-      document.body.className = '';
       document.body.classList.add(pageClass);
     }
   } catch (e) {
