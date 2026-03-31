@@ -9,6 +9,8 @@ const routes: Routes = {
   '/meet':           (params) => import('./pages/meet/meet').then(m => m.meetPage(params)),
   '/privacy-policy': (params) => import('./pages/privacy-policy').then(m => m.privacyPolicyPage(params)),
   '/coaching': (params) => import('./pages/coaching/coaching').then(m => m.coachingPage(params)),
+  '/mastermind': (params) => import('./pages/mastermind/mastermind').then(m => m.mastermindPage(params)),
+  '/guide': (params) => import('./pages/guide/guide').then(m => m.guidePage(params)),
 
 };
 

@@ -1,4 +1,3 @@
-
 @use "@styles/breakpoints";
 .top {
   position: relative ;  
@@ -13,14 +12,18 @@
     object-fit: cover;
     position: absolute;
         right: -60px;
-    top: -44px;
+    top: -54px;
     
     clip-path: circle(218px at 70% 26%);
+    @include breakpoints.tablet {
+      right: 0;
+      top: 0;
+    }
   }
 
   .b00 {
     color: rgba(64, 19, 0, 0.75);
-    font-size: 18px;
+    font-size: 17px;
     text-align: center;
     height: 18px;
     position: relative;
@@ -59,6 +62,8 @@
     justify-content: space-between;
     align-items: center;
     margin: -14px 0 0;
+    position: relative;
+    z-index: 10;
     .home {
       background: url("@/assets/ico_02.svg") no-repeat;
       width: 34px;

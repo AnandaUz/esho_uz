@@ -1,8 +1,10 @@
 import type { Page } from '../types';
+import '@components/top/c-top';
 
 export const privacyPolicyPage: Page = () => {
   return {
     html: `
+    <c-top></c-top>
       <h1>Политика конфиденциальности</h1>
 
     <div class="policy_page">

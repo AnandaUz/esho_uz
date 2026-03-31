@@ -7,9 +7,14 @@ export class CTop extends HTMLElement {
     this.innerHTML = `
     <div class="top">
       <img src="/photo-ananda2.jpg" alt="" fetchpriority="high" loading="eager">
+
+      
       <div class="b00">
+    <!--  
           Саморазвитие • Здоровье • Бизнес
+          -->
       </div>
+        
 
       <div class="b02">
         <a href="/" class="home_anh">
