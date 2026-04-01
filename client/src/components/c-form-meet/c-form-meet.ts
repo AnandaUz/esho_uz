@@ -44,7 +44,19 @@ export class CFormMeet extends HTMLElement {
             sendTrackingEvent('input_contact')
         });
 
-        btnSend.addEventListener('click', async () => {                       
+        btnSend.addEventListener('click', async () => {
+            if (!userName?.value) {
+                userName?.focus();
+                userName?.classList.add('error');
+                return;
+            }
+            userName?.classList.remove('error');
+            if (!userContact?.value) {
+                userContact?.focus();
+                userContact?.classList.add('error');
+                return;
+            }
+            userContact?.classList.remove('error');
             
             //- отправка события в Pixel
             if (typeof window.fbq === 'function') {
