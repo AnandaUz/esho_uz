@@ -12,7 +12,6 @@ async function init() {
 }
 init();
 
-
 document.addEventListener('click', (e) => {
   const target = e.target as HTMLAnchorElement;
   
