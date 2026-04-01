@@ -12,17 +12,17 @@ window.addEventListener("load", () => {
     
     if (!off_MyStat) {
         trackVisit();
-        // const timers = [
-        //     { ms: 1000,  label: "1с" },  
-        //     { ms: 5000, label: "5с" },
-        //     { ms: 10000, label: "10с" },
-        //     { ms: 30000, label: "30с" },
-        //     { ms: 50000, label: "50с" }
-        // ];
-        // // 3. Запускаем циклом
-        // timers.forEach(timer => {
-        //     setTimeout(() => sendTrackingEvent(timer.label), timer.ms);
-        // });
+        const timers = [
+            { ms: 1000,  label: "1с" },  
+            { ms: 5000, label: "5с" },
+            { ms: 10000, label: "10с" },
+            { ms: 30000, label: "30с" },
+            { ms: 50000, label: "50с" }
+        ];
+        // 3. Запускаем циклом
+        timers.forEach(timer => {
+            setTimeout(() => sendTrackingEvent(timer.label), timer.ms);
+        });
 
         // let scrollSent = false;
         let scrollTimer: ReturnType<typeof setTimeout>;
@@ -34,7 +34,7 @@ window.addEventListener("load", () => {
               (window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * 100
             );
             sendTrackingEvent(`scroll ${scrollPercent}`);
-          }, 500); // 500ms после остановки
+          }, 300); // 500ms после остановки
         });
     }
     
