@@ -2,7 +2,7 @@ import './config';
 import express from 'express';
 import cors from 'cors';
 
-import { sendMessageToAdmin } from './api';
+import { sendMessageToAdmin, bot } from './api';
 
 const app = express();
 
@@ -23,25 +23,9 @@ app.post('/track', async (req, res) => {
   await sendMessageToAdmin(message);
   res.json({ ok: true });
 });
-// маршрут для Telegram
-// app.post("/bot", api);
-
-app.post("/submit-form", async (req, res) => {
-    const { userName, userContact } = req.body;
-    
-    if (!userName || !userContact) {
-        return res.status(400).json({ success: false, error: "Missing fields" });
-    }
-
-    const message = `📩 <b>Новая заявка с сайта (Встреча)</b>\n\nИмя: ${userName}\nКонтакт: ${userContact}`;
-    
-    const result = await sendMessageToAdmin(message);
-    
-    if (result.success) {
-        res.json({ success: true });
-    } else {
-        res.status(500).json({ success: false, error: result.error });
-    }
+// маршрут для Telegram webhook
+app.post('/tg_bot_webhook', (req, res) => {
+  bot.handleUpdate(req.body, res);
 });
 
 app.listen(PORT, () => {

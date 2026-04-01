@@ -52,18 +52,36 @@ function getStorageStatus() {
 
 export const adminPage: Page = () => {
   return {
+    pageClass: 'admin',
     html: `
-    <div class="admin">
+    <c-top></c-top>
+    <div class="cont">
+
       <h1>Управление статистикой</h1>
 
 <button class="btn_big btn_off_all">Выключить всё</button>
 <div class="btns">
+<input type="text" id="userId" placeholder="ID">
+
   
 </div>
            
     </div>
     `,
     init() {
+      const userIdInput = document.getElementById('userId') as HTMLInputElement | null;
+      const userId = localStorage.getItem('good_visiter');
+
+      if (userIdInput) {
+        if (userId) {
+          userIdInput.value = userId;
+        } else {
+          userIdInput.value = '';
+        }
+        userIdInput.addEventListener('input', () => {
+          localStorage.setItem('good_visiter', userIdInput.value);
+        });
+      }
       document.querySelector('.btn_off_all')?.addEventListener('click', () => {
         btns.forEach(btn => {
           btn.isOff = true;

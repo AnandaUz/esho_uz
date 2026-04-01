@@ -1,0 +1,85 @@
+# Игнорируемые файлы и директории для агента Antigravity
+# Это поможет существенно сэкономить токены (избежать отправки огромных файлов в контекст).
+
+# Зависимости
+node_modules/
+
+# Файлы блокировки зависимостей (очень большие, агенту их содержимое не нужно менять)
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# Сборки и скомпилированные файлы
+dist/
+dist-client/
+dist-server/
+client/dist/
+build/
+
+.vscode/
+
+# Секреты и конфиденциальные данные
+.env
+.env.local
+.env.*
+*.pem
+
+# Логи, дампы и кэш
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.eslintcache
+.DS_Store
+
+# Медиа файлы и шрифты (агенту не нужно считывать бинарники или огромные SVG-карты)
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.svg
+*.ico
+*.woff
+*.woff2
+*.ttf
+*.eot
+*.scss
+
+# Минифицированные файлы
+*.min.js
+*.min.css
+
+# Конфигурация базы данных/локальные БД (если применимо)
+*.sqlite
+*.db
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+node_modules
+dist
+dist-ssr
+*.local
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+.git/
+.agentignore
+.tools/
+
+.woff2

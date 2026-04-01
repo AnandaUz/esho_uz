@@ -1,79 +1,56 @@
 const off_MyStat = localStorage.getItem('off_MyStat') === 'true';
-const STORAGE_ID = 'good_visiter'
+const STORAGE_ID = 'good_visiter';
+
+declare global {
+  interface Window {
+    timeStart: Date;
+  }
+}
+
 window.addEventListener("load", () => {  
      
-    const meetForm = document.getElementById('meetForm') as HTMLFormElement | null;
-    const formMessage = document.getElementById('formMessage') as HTMLElement | null;
-
-    if (meetForm && formMessage) {
-        meetForm.addEventListener('submit', async (event) => {
-            event.preventDefault();
-
-            const formData = new FormData(meetForm);
-            const data = {
-                userName: formData.get('userName'),
-                userContact: formData.get('userContact')
-            };
-
-            try {
-                const response = await fetch(import.meta.env.VITE_API_URL + '/api/submit-form', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(data)
-                });
-
-                const result = await response.json();
-
-                if (typeof window.fbq === 'function') {
-                    fbq('track', 'Lead', {value: 1.00, currency: 'USD', content_name: 'meet_form'});
-                }
-
-                if (result.success) {
-                    meetForm.style.display = 'none';
-                    formMessage.style.display = 'block';
-                } else {
-                    alert('Произошла ошибка при отправке заявки. Попробуйте еще раз.');
-                }
-            } catch (error) {
-                console.error('Error submitting form:', error);
-                alert('Произошла ошибка при отправке заявки.');
-            }
-        });
-    }
+    
     if (!off_MyStat) {
         trackVisit();
-        const timers = [
-            { ms: 1000,  label: "1с" },
-            { ms: 3000, label: "3с" },
-            { ms: 5000, label: "5с" },
-            { ms: 10000, label: "10с" },
-            { ms: 30000, label: "30с" },
-            { ms: 50000, label: "50с" }
-        ];
-        // 3. Запускаем циклом
-        timers.forEach(timer => {
-            setTimeout(() => sendTrackingEvent(timer.label), timer.ms);
-        });
+        // const timers = [
+        //     { ms: 1000,  label: "1с" },  
+        //     { ms: 5000, label: "5с" },
+        //     { ms: 10000, label: "10с" },
+        //     { ms: 30000, label: "30с" },
+        //     { ms: 50000, label: "50с" }
+        // ];
+        // // 3. Запускаем циклом
+        // timers.forEach(timer => {
+        //     setTimeout(() => sendTrackingEvent(timer.label), timer.ms);
+        // });
 
-        let scrollSent = false;
+        // let scrollSent = false;
+        let scrollTimer: ReturnType<typeof setTimeout>;
+
         window.addEventListener('scroll', function() {
-            if (scrollSent) return; // Если уже отправили, выходим
-            scrollSent = true;
-            sendTrackingEvent("scroll");
+          clearTimeout(scrollTimer);
+          scrollTimer = setTimeout(() => {
+            const scrollPercent = Math.round(
+              (window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * 100
+            );
+            sendTrackingEvent(`scroll ${scrollPercent}`);
+          }, 500); // 500ms после остановки
         });
     }
     
 });
-function sendTrackingEvent(eventName: string) {   
+export async function sendTrackingEvent(eventName: string):Promise<boolean> {   
     const page_path = window.location.pathname;
     const message = `${getVisiterId()} 🔅 ${eventName} 🔅 ${page_path}`
-    fetch(import.meta.env.VITE_API_URL + '/track', {
+    await fetch(import.meta.env.VITE_API_URL + '/track', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({message})
-    }).catch(err => console.log('Tracking error:', err));
+    }).catch(err =>  {
+      console.log('Tracking error:', err);
+      return false;
+    });
+    return true;
 }
 function parseUserAgent(ua: string): { browser: string; version: string; os: string } {
   if (!ua) return { browser: 'Unknown', version: '', os: 'Unknown' };
@@ -126,11 +103,16 @@ function parseUserAgent(ua: string): { browser: string; version: string; os: str
   return { browser, version, os: detectedOS };
 }
 function trackVisit() {
-
-    if (isAlreadyTracked()) return;
+const timeEnd = new Date();
+    const timeDiff = Math.round((timeEnd.getTime() - window.timeStart.getTime())/10)/100;
+  if (isAlreadyTracked()) {
+    
+    sendTrackingEvent(`in ${timeDiff}`);
+    return;
+  }
   const params = new URLSearchParams(window.location.search);
-  const fbclid = params.get('fbclid') || 'кто-то';
-  sessionStorage.setItem(STORAGE_ID, fbclid);    
+  const fbclid = params.get('fbclid') || 'id-'+Math.random().toString(36).slice(7, 10);
+  localStorage.setItem(STORAGE_ID, fbclid);    
 
   const isMobile = /Mobile|Android|iPhone/i.test(navigator.userAgent) ? "📱" : "💻";
   const language = navigator.language || "";
@@ -157,7 +139,8 @@ function trackVisit() {
   const { browser, version, os } = parseUserAgent(navigator.userAgent);
   const browserName = `${browser}${version ? '-' + version : ''} ${os}`;
 
-  const message = `${dateStr} ${isMobile} ${language} 🔸 ${browserName} 🔸 ${document.referrer || "🌸"} ${marketingInfo}`;
+  const message = `${dateStr} ${isMobile} ${language} 🔸 ${browserName} 🔸 ${document.referrer || "🌸"} ${marketingInfo}
+⏳ ${timeDiff}`;
 
   fetch(import.meta.env.VITE_API_URL + '/track', {
     method: 'POST',
@@ -166,10 +149,10 @@ function trackVisit() {
   });
 }
 function getVisiterId() {
-    return sessionStorage.getItem(STORAGE_ID)
+    return localStorage.getItem(STORAGE_ID)
 }
 function isAlreadyTracked(): boolean {
-    const str = sessionStorage.getItem(STORAGE_ID)
+    const str = localStorage.getItem(STORAGE_ID)
     if (str) return true; 
     return false; 
 }

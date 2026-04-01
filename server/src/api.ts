@@ -1,10 +1,10 @@
-import 'dotenv/config';
+import './config';
 import { Telegraf } from "telegraf";
 
 const BOT_TOKEN = process.env.BOT_TOKEN || '';
 const BOT_ADMIN = process.env.BOT_ADMIN || '';
 
-const bot = new Telegraf(BOT_TOKEN);
+export const bot = new Telegraf(BOT_TOKEN);
 
 
 bot.start(async (ctx) => {
@@ -14,16 +14,35 @@ bot.start(async (ctx) => {
     const lastName = ctx.from.last_name || "";
     const fullName = `${firstName} ${lastName}`.trim() || "Пользователь";
 
-    // читаем параметр start
-    const args = ctx.startPayload || ""; 
-
+    // маппинг параметра start → текст заявки
+    const payload = (ctx as any).startPayload ?? "";
     let typeText = "";
-    if (args === "mastermind") typeText = "на МАСТЕРМАЙНД";
-    else if (args === "coaching") typeText = "на КОУЧ-СЕССИЮ";
-    else if (args === "meet") typeText = "на бесплатную встречу";
+
+    switch (payload) {
+        case "mastermind":
+            typeText = "на МАСТЕРМАЙНД";
+            break;
+        case "coaching":
+            typeText = "на КОУЧ-СЕССИЮ";
+            break;
+        case "meet":
+            typeText = "на бесплатную встречу";
+            break;
+        case "question":
+            typeText = "на вопрос";
+            break;
+        default:
+            typeText = "";
+            break;
+    }
 
     const suffix = typeText ? ` ${typeText}` : "";
-    const clientMsg = `✅ Ваша заявка${suffix} отправлена! В самое ближайшее время я (Ананда @ananda_uz) отвечу вам в личном сообщении`;
+    let clientMsg = `✅ Ваша заявка${suffix} отправлена! В самое ближайшее время я (Ананда @ananda_uz) отвечу вам в личном сообщении`;
+
+    if (payload === "question") {
+        clientMsg = `✅ Я рад вашему сообщению! 
+В самое ближайшее время я (Ананда @ananda_uz) напишу вам в личном сообщении, и вы сможете задать свой вопрос`;
+    }
 
     const username = ctx.from.username;
     const userDisplay = username 
