@@ -6,39 +6,35 @@ declare global {
     timeStart: Date;
   }
 }
+if (!off_MyStat) {
+    trackVisit();
+    const timers = [
+        { ms: 1000,  label: "1с" },  
+        { ms: 5000, label: "5с" },
+        { ms: 10000, label: "10с" },
+        { ms: 30000, label: "30с" },
+        { ms: 50000, label: "50с" }
+    ];
+    // 3. Запускаем циклом
+    timers.forEach(timer => {
+        setTimeout(() => sendTrackingEvent(timer.label), timer.ms);
+    });
 
-window.addEventListener("load", () => {  
-     
-    
-    if (!off_MyStat) {
-        trackVisit();
-        const timers = [
-            { ms: 1000,  label: "1с" },  
-            { ms: 5000, label: "5с" },
-            { ms: 10000, label: "10с" },
-            { ms: 30000, label: "30с" },
-            { ms: 50000, label: "50с" }
-        ];
-        // 3. Запускаем циклом
-        timers.forEach(timer => {
-            setTimeout(() => sendTrackingEvent(timer.label), timer.ms);
-        });
+    // let scrollSent = false;
+    let scrollTimer: ReturnType<typeof setTimeout>;
 
-        // let scrollSent = false;
-        let scrollTimer: ReturnType<typeof setTimeout>;
+    window.addEventListener('scroll', function() {
+      clearTimeout(scrollTimer);
+      scrollTimer = setTimeout(() => {
+        const scrollPercent = Math.round(
+          (window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * 100
+        );
+        sendTrackingEvent(`scroll ${scrollPercent}`);
+      }, 300); // 500ms после остановки
+    });
+}
 
-        window.addEventListener('scroll', function() {
-          clearTimeout(scrollTimer);
-          scrollTimer = setTimeout(() => {
-            const scrollPercent = Math.round(
-              (window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * 100
-            );
-            sendTrackingEvent(`scroll ${scrollPercent}`);
-          }, 300); // 500ms после остановки
-        });
-    }
-    
-});
+window.addEventListener("load", () => { });
 export async function sendTrackingEvent(eventName: string):Promise<boolean> {   
     const page_path = window.location.pathname;
     const message = `${getVisiterId()} 🔅 ${eventName} 🔅 ${page_path}`
