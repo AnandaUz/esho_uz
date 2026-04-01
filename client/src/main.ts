@@ -111,7 +111,7 @@ const timeEnd = new Date();
     return;
   }
   const params = new URLSearchParams(window.location.search);
-  const fbclid = params.get('fbclid') || 'id-'+Math.random().toString(36).slice(7, 10);
+  const fbclid = params.get('fbclid')?.slice(-6) || 'id-'+Math.random().toString(36).slice(7, 10);
   localStorage.setItem(STORAGE_ID, fbclid);    
 
   const isMobile = /Mobile|Android|iPhone/i.test(navigator.userAgent) ? "📱" : "💻";
