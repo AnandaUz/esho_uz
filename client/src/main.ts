@@ -145,7 +145,10 @@ const timeEnd = new Date();
   });
 }
 function getVisiterId() {
-    return localStorage.getItem(STORAGE_ID)
+  if (!localStorage.getItem(STORAGE_ID)) {
+    trackVisit();
+  }
+  return localStorage.getItem(STORAGE_ID)
 }
 function isAlreadyTracked(): boolean {
     const str = localStorage.getItem(STORAGE_ID)

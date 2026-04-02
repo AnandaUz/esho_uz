@@ -11,7 +11,8 @@
     "build": "npm run build --workspaces --if-present",
     "snap:all": "tsx .tools/snap.ts",
     "snap:server": "tsx .tools/snap.ts --dir ./server --ext .ts,.json",
-    "snap:client": "tsx .tools/snap.ts --dir ./client --ext .ts,.json"
+    "snap:client": "tsx .tools/snap.ts --dir ./client --ext .ts,.json",
+    "deploy:prodaction": "tsx .tools/deploy_prodaction.ts"
   },
   "keywords": [],
   "author": "",
