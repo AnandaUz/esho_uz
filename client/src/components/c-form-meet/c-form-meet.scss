@@ -10,12 +10,36 @@
   url("@/assets/btn-bg-b.svg") center bottom repeat-x ,
   #f4fcff;
 
+  color: #5e6b61;
+
   .bottom-text {
     font-size: 14px;
     color: rgb(255 255 255 / 0.45);
     text-align: center;
   }
+  .b1 {
+    font-size:14px;
+  }
+  .line {
+    color: #df5505;
+    font-size: 16px;
+    span {
+      color: #f01405;
+      font-size: 19px;
+    }
+  }
   .bottom-text {
+    color: #008329;
+    padding: 5px 0 0;
+  }
+  .message-top {
+    font-size: 19px;
+    font-weight: 600;
+    color: #28a745;
+    padding: 0 0 5px;
+  }
+  .ex-message-note {
+    font-size: 14px;
     color: #008329;
     padding: 5px 0 0;
   }
@@ -54,13 +78,10 @@
 
         }
     }
-
-    .formMessage {
-          font-size: 18px;
-          padding: 10px;
-          display: none;
-          font-weight: 600;
-          color: #28a745;
+    .formMessage {      
+      padding: 0 5px;
+      display: none;          
+      
     }
     .formError {
      font-size: 18px;
