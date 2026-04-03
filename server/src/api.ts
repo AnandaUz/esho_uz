@@ -15,7 +15,7 @@ bot.start(async (ctx) => {
     const fullName = `${firstName} ${lastName}`.trim() || "Пользователь";
 
     // маппинг параметра start → текст заявки
-    const payload = (ctx as any).startPayload ?? "";
+    const payload = ctx.payload ?? "";
     let typeText = "";
 
     switch (payload) {
@@ -52,12 +52,17 @@ bot.start(async (ctx) => {
     }
 
     const username = ctx.from.username;
-    const userDisplay = username 
-        ? `${fullName} (@${username})` 
-        : `<a href="tg://user?id=${ctx.from.id}">${fullName}</a>`;
+    // const userDisplay = username 
+    //     ? `${fullName} (@${username})` 
+    //     : `<a href="tg://user?id=${ctx.from.id}">${fullName}</a>`;
 
-    const adminMsg = `📩 Новая заявка${suffix}\nОт: ${userDisplay}`;
+    // const adminMsg = `📩 Новая заявка${suffix}\nОт: ${userDisplay}`;
 
+    const adminMsg = `📩 Новая заявка${suffix}
+От: ${fullName}
+ID: <code>${ctx.from.id}</code>
+${username ? `Username: @${username}` : "Username: нет"}
+Ссылка: <a href="tg://user?id=${ctx.from.id}">${fullName}</a>`;
     // Сообщения
     await sendMessageToAdmin(adminMsg);
     await ctx.reply(clientMsg);
