@@ -67,6 +67,23 @@ ${username ? `Username: @${username}` : "Username: нет"}
     await sendMessageToAdmin(adminMsg);
     await ctx.reply(clientMsg);
 });
+bot.on("message", async (ctx) => {
+    if (!ctx.from) return;
+
+    const firstName = ctx.from.first_name || "";
+    const lastName = ctx.from.last_name || "";
+    const fullName = `${firstName} ${lastName}`.trim() || "Пользователь";
+    const username = ctx.from.username;
+
+    const userDisplay = username
+        ? `${fullName} (@${username})`
+        : `${fullName} — ID: <code>${ctx.from.id}</code>`;
+
+    const text = (ctx.message as any).text || "[не текст]";
+
+    const adminMsg = `💬 Сообщение от: ${userDisplay}\n\n${text}`;
+    await sendMessageToAdmin(adminMsg);
+});
 export async function sendMessageToAdmin(message: string) {
     try {
         await bot.telegram.sendMessage(BOT_ADMIN, message,
