@@ -197,36 +197,25 @@ h2 {
   line-height: 1;
 }
 
-.meet {  
-  
-  .bl-00 {
-    //font-size: 20px;
-    margin: 5px 0px;
-    line-height: 1.1;
-    p {
-      color: #cb2613;
-      &.title {
-        margin: 12px 0;
-      }
 
-    }
-  }
-  
-}
 .list-p {
-    p {
-      &:before {
-        content: "🔸";
-      }
+  p {
+    &:before {
+      content: "🔸";
+      display: inline-block;
+      margin: 0 0 0 -5px;
     }
   }
-  .list-p2 {
-    p {
-      &:before {
-        content: "🔹";
-      }
+}
+.list-p2 {
+  p {
+    &:before {
+      content: "🔹";
+      display: inline-block;
+      margin: 0 0 0 -5px;
     }
   }
+}
 
 .cont {
   padding: 0 20px 5px;
@@ -682,11 +671,11 @@ a.MM {
   border-radius: 5px;
 }
 .btn_big, .btn-meet {
-  margin: 5px 0;
+  margin: 0 0 5px;
   padding: 8px 15px;
   display: inline-grid;
   box-shadow: 0 1px 6px #0005;
-  font-size: 16px;
+  font-size: 18px;
   color: rgba(255, 255, 255, 0.9);
   border-radius: 6px;
 
@@ -716,12 +705,27 @@ a.MM {
     top: 2px;
   }
   span {
-    font-size: 17px;
-    color: rgba(255, 255, 255, 0.8);
+    
   }
   &:visited {
     color: rgba(255, 255, 255, 0.9);
   }
+  .anh-to_bot {
+    --w: 30px;
+    --h: 32px;
+    background-image: url("@assets/ico-tg.svg");
+    background-size: var(--w) var(--h);
+    background-position: 0 center;
+    background-repeat: no-repeat;
+    padding: 0 0 0 40px;
+    font-size: 20px;
+  }
+  .summary {
+    font-size: 15px;
+    color: rgba(255, 255, 255, 0.7);
+    display: block;
+  }
+
 
 }
 

@@ -7,12 +7,13 @@ export class CAnhToBot extends HTMLElement {
   async connectedCallback() {
     const attr = this.getAttribute('data-attr') || 'f1';
     const btnText = this.getAttribute('btn-text') || 'Отправить';
+    const classAttr = this.getAttribute('data-class') || '';
      this.innerHTML = `
      <a href="${this.botUrl}?start=${attr}"
-               class="btn btn-meet"
+               class="btn btn-meet "
                target="_blank"
-               onclick="fbq('track', 'Lead', {value: 1.00, currency: 'USD', content_name: 'meet_btn1'});">
-                ${btnText}
+               onclick="fbq('track', 'Lead', {value: 1.00, currency: 'USD', content_name: '${attr}_btn1'});">
+                <span class="${classAttr}">${btnText}</span>
             </a>
      `
     this.querySelector('a')?.addEventListener('click', () => {

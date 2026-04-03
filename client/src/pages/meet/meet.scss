@@ -1,0 +1,38 @@
+.meet {  
+  
+  .bl-00 {
+    //font-size: 20px;
+    margin: 5px 0px;
+    line-height: 1.1;
+    p {
+      text-indent: 0;
+      color: #cb2613;
+      &.title {
+        margin: 12px 0 5px;
+      }
+
+    }
+  }
+  p.indent {
+    margin: 0 0 10px;
+    text-indent: 20px;
+  }
+  
+  
+}
+.litte-text {
+    color: #008329;
+    padding: 5px 0 0;
+    font-size: 14px;
+    text-align: center;
+}
+.litte-text2 {
+    padding: 0;
+    font-size: 16px;
+    text-align: center;
+    display: block;
+    margin: 10px 0;
+    span {
+        color: #000ba5;
+    }
+}
