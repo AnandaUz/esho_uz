@@ -124,8 +124,15 @@ function trackVisit() {
   localStorage.setItem('fbp', fbp);
   localStorage.setItem('fbc', fbc);
 
+
   const params = new URLSearchParams(window.location.search);
-  const fbclid = params.get('fbclid')?.slice(-6) || 'id-'+Math.random().toString(36).slice(7, 10);
+  let fbclid = params.get('fbclid')
+
+  localStorage.setItem('fbclid', fbclid || '');
+
+
+  fbclid = fbclid?.slice(-6) || 'id-'+Math.random().toString(36).slice(7, 10);
+
   localStorage.setItem(STORAGE_ID, fbclid);    
 
   const isMobile = /Mobile|Android|iPhone/i.test(navigator.userAgent) ? "📱" : "💻";

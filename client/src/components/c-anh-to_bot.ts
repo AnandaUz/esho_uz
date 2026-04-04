@@ -20,12 +20,13 @@ export class CAnhToBot extends HTMLElement {
    
     
     this.querySelector('a')?.addEventListener('click', () => {
- const fbp = localStorage.getItem('fbp') || '_fbp';
-    const fbc = localStorage.getItem('fbc') || '_fbc';
-    
+ const fbp = localStorage.getItem('fbp') || '';
+    const fbc = localStorage.getItem('fbc') || '';
+    const fbclid = localStorage.getItem('fbclid') || '';
     const message = `${getVisiterId()} 🔅 onStartBot
 fbp:${fbp}
-fbc:${fbc}`
+fbc:${fbc}
+fbclid:${fbclid}`
 
       sendTrackingMessage(message);
     });
