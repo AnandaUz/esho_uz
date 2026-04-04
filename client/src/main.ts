@@ -48,6 +48,19 @@ export async function sendTrackingEvent(eventName: string):Promise<boolean> {
     });
     return true;
 }
+export async function sendTrackingMessage(message: string):Promise<boolean> {   
+
+    
+    await fetch(import.meta.env.VITE_API_URL + '/track', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({message})
+    }).catch(err =>  {
+      console.log('Tracking error:', err);
+      return false;
+    });
+    return true;
+}
 function parseUserAgent(ua: string): { browser: string; version: string; os: string } {
   if (!ua) return { browser: 'Unknown', version: '', os: 'Unknown' };
 
@@ -99,13 +112,18 @@ function parseUserAgent(ua: string): { browser: string; version: string; os: str
   return { browser, version, os: detectedOS };
 }
 function trackVisit() {
-const timeEnd = new Date();
+  const timeEnd = new Date();
     const timeDiff = Math.round((timeEnd.getTime() - window.timeStart.getTime())/10)/100;
-  if (isAlreadyTracked()) {
-    
+  if (isAlreadyTracked()) {    
     sendTrackingEvent(`in ${timeDiff}`);
     return;
   }
+
+  const fbp = getCookie('_fbp') || '';
+  const fbc = getCookie('_fbc') || ''
+  localStorage.setItem('fbp', fbp);
+  localStorage.setItem('fbc', fbc);
+
   const params = new URLSearchParams(window.location.search);
   const fbclid = params.get('fbclid')?.slice(-6) || 'id-'+Math.random().toString(36).slice(7, 10);
   localStorage.setItem(STORAGE_ID, fbclid);    
@@ -136,7 +154,9 @@ const timeEnd = new Date();
   const browserName = `${browser}${version ? '-' + version : ''} ${os}`;
 
   const message = `${dateStr} ${isMobile} ${language} 🔸 ${browserName} 🔸 ${document.referrer || "🌸"} ${marketingInfo}
-⏳ ${timeDiff}`;
+⏳ ${timeDiff}
+fbp:${fbp}
+fbc:${fbc}`;
 
   fetch(import.meta.env.VITE_API_URL + '/track', {
     method: 'POST',
@@ -144,7 +164,11 @@ const timeEnd = new Date();
     body: JSON.stringify({ message })
   });
 }
-function getVisiterId() {
+export function getCookie(name: string): string {
+    const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
+    return match && match[2] ? match[2] : '';
+}
+export function getVisiterId() {
   if (!localStorage.getItem(STORAGE_ID)) {
     trackVisit();
   }
@@ -155,6 +179,7 @@ function isAlreadyTracked(): boolean {
     if (str) return true; 
     return false; 
 }
+
 
 
 

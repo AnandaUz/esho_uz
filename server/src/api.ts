@@ -47,18 +47,14 @@ bot.start(async (ctx) => {
         clientMsg = `✅ Я благодарю вас за регистрацию! 
 В самое ближайшее время я (Ананда @ananda_uz) напишу вам в личном сообщении, и мы подберём удобное для вас время.
 
-И я рад поделиться с вами гайдом "Трансформация без саботажа", вы сможете почитать его пока я вам отвечаю
-ссылка https://esho.uz/guide.pdf`;
+И я рад поделиться с вами гайдом "Трансформация без саботажа", вы сможете почитать его пока я вам отвечаю.
+
+Ссылка https://esho.uz/guide.pdf
+`;
     }
-
     const username = ctx.from.username;
-    // const userDisplay = username 
-    //     ? `${fullName} (@${username})` 
-    //     : `<a href="tg://user?id=${ctx.from.id}">${fullName}</a>`;
 
-    // const adminMsg = `📩 Новая заявка${suffix}\nОт: ${userDisplay}`;
-
-    const adminMsg = `📩 Новая заявка${suffix}
+    const adminMsg = `+📩 Новая заявка${suffix}
 От: ${fullName}
 ID: <code>${ctx.from.id}</code>
 ${username ? `Username: @${username}` : "Username: нет"}
@@ -67,6 +63,8 @@ ${username ? `Username: @${username}` : "Username: нет"}
     await sendMessageToAdmin(adminMsg);
     await ctx.reply(clientMsg);
 });
+
+
 bot.on("message", async (ctx) => {
     if (!ctx.from) return;
 

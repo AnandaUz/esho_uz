@@ -1,4 +1,4 @@
-import { sendTrackingEvent } from "@/main";
+import { getVisiterId, sendTrackingMessage } from "@/main";
 
 
 export class CAnhToBot extends HTMLElement {   
@@ -8,7 +8,7 @@ export class CAnhToBot extends HTMLElement {
     const attr = this.getAttribute('data-attr') || 'f1';
     const btnText = this.getAttribute('btn-text') || 'Отправить';
     const classAttr = this.getAttribute('data-class') || '';
-     this.innerHTML = `
+    this.innerHTML = `
      <a href="${this.botUrl}?start=${attr}"
                class="btn btn-meet "
                target="_blank"
@@ -16,8 +16,18 @@ export class CAnhToBot extends HTMLElement {
                 <span class="${classAttr}">${btnText}</span>
             </a>
      `
+
+   
+    
     this.querySelector('a')?.addEventListener('click', () => {
-      sendTrackingEvent(`btn_${attr}`);
+ const fbp = localStorage.getItem('fbp') || '_fbp';
+    const fbc = localStorage.getItem('fbc') || '_fbc';
+    
+    const message = `${getVisiterId()} 🔅 onStartBot
+fbp:${fbp}
+fbc:${fbc}`
+
+      sendTrackingMessage(message);
     });
   }
 }
