@@ -54,7 +54,7 @@ bot.start(async (ctx) => {
     }
     const username = ctx.from.username;
 
-    const adminMsg = `+📩 Новая заявка${suffix}
+    const adminMsg = `📩 Новая заявка${suffix}
 От: ${fullName}
 ID: <code>${ctx.from.id}</code>
 ${username ? `Username: @${username}` : "Username: нет"}

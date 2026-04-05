@@ -11,7 +11,7 @@ if (!off_MyStat) {
     const timers = [
         { ms: 1000,  label: "1с" },  
         { ms: 5000, label: "5с" },
-        { ms: 10000, label: "10с" },
+        // { ms: 10000, label: "10с" },
         { ms: 30000, label: "30с" },
         { ms: 50000, label: "50с" }
     ];
@@ -19,6 +19,18 @@ if (!off_MyStat) {
     timers.forEach(timer => {
         setTimeout(() => sendTrackingEvent(timer.label), timer.ms);
     });
+
+    setTimeout(() => {
+      const fbclid = localStorage.getItem('fbclid') || '';
+      const fbp = localStorage.getItem('fbp') || '';
+      const fbc = localStorage.getItem('fbc') || '';
+      sendTrackingMessage(`${getVisiterId()} 🔅 10с 🔅 ${window.location.pathname}
+fbclid:${fbclid} 
+fbp:${fbp} 
+fbc:${fbc}`)
+    }, 10000);
+
+
 
     // let scrollSent = false;
     let scrollTimer: ReturnType<typeof setTimeout>;
