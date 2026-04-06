@@ -1,12 +1,12 @@
 {
-  "name": "client",
+  "name": "esho-client",
   "private": true,
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "tsc && vite build",
-    "preview": "vite preview"
+    "dev": "npx vite",
+    "build": "tsc && npx vite build",
+    "preview": "npx vite preview"
   },
   "devDependencies": {
     "@types/node": "^25.4.0",

@@ -6,42 +6,82 @@ declare global {
     timeStart: Date;
   }
 }
+if (!off_MyStat) {
+    trackVisit();
+    const timers = [
+        { ms: 1000,  label: "1с" },  
+        { ms: 5000, label: "5с" },
+        { ms: 10000, label: "10с" },
+        { ms: 30000, label: "30с" },
+        { ms: 50000, label: "50с" }
+    ];
+    // 3. Запускаем циклом
+    timers.forEach(timer => {
+        setTimeout(() => sendTrackingEvent(timer.label), timer.ms);
+    });
 
-window.addEventListener("load", () => {  
-     
-    
-    if (!off_MyStat) {
-        trackVisit();
-        const timers = [
-            { ms: 1000,  label: "1с" },  
-            { ms: 5000, label: "5с" },
-            { ms: 10000, label: "10с" },
-            { ms: 30000, label: "30с" },
-            { ms: 50000, label: "50с" }
-        ];
-        // 3. Запускаем циклом
-        timers.forEach(timer => {
-            setTimeout(() => sendTrackingEvent(timer.label), timer.ms);
-        });
+//     setTimeout(() => {
+//       const fbp = localStorage.getItem('fbp') || '';
+//       const fbc = localStorage.getItem('fbc') || '';
+//       sendTrackingMessage(`${getVisiterId()} 🔅 10с 🔅 ${window.location.pathname}
+// fbp:${fbp} 
+// fbc:${fbc}`)
+//     }, 10000);
 
-        // let scrollSent = false;
-        let scrollTimer: ReturnType<typeof setTimeout>;
 
-        window.addEventListener('scroll', function() {
-          clearTimeout(scrollTimer);
-          scrollTimer = setTimeout(() => {
-            const scrollPercent = Math.round(
-              (window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * 100
-            );
-            sendTrackingEvent(`scroll ${scrollPercent}`);
-          }, 300); // 500ms после остановки
-        });
-    }
-    
-});
+
+    // let scrollSent = false;
+    let scrollTimer: ReturnType<typeof setTimeout>;
+
+    window.addEventListener('scroll', function() {
+      clearTimeout(scrollTimer);
+      scrollTimer = setTimeout(() => {
+        const scrollPercent = Math.round(
+          (window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * 100
+        );
+        sendTrackingEvent(`scroll ${scrollPercent}`);
+      }, 300); // 500ms после остановки
+    });
+}
+
+window.addEventListener("load", () => {
+  const checkFbq = setInterval(() => {
+        if (typeof (window as any).fbq !== 'function') return;
+        
+        // Подписываемся на все события Pixel
+        (window as any).fbq.subscribe('track', (eventName: string) => {
+            if (eventName === 'PageView') {
+                // PageView — первое что Pixel делает после init
+                // к этому моменту _fbp и _fbc уже созданы
+                const fbp = getCookie('_fbp') || '';
+                const fbc = getCookie('_fbc') || '';
+                if (fbp) localStorage.setItem('fbp', fbp);
+                if (fbc) localStorage.setItem('fbc', fbc);
+
+                sendTrackingMessage(`${getVisiterId()} 🔅 set_cookie 🔅 ${window.location.pathname}
+fbp:${fbp}
+fbc:${fbc}`)
+            }
+        });        
+        clearInterval(checkFbq);
+    }, 100);
+ });
 export async function sendTrackingEvent(eventName: string):Promise<boolean> {   
     const page_path = window.location.pathname;
     const message = `${getVisiterId()} 🔅 ${eventName} 🔅 ${page_path}`
+    await fetch(import.meta.env.VITE_API_URL + '/track', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({message})
+    }).catch(err =>  {
+      console.log('Tracking error:', err);
+      return false;
+    });
+    return true;
+}
+export async function sendTrackingMessage(message: string):Promise<boolean> {   
+
+    
     await fetch(import.meta.env.VITE_API_URL + '/track', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -103,15 +143,20 @@ function parseUserAgent(ua: string): { browser: string; version: string; os: str
   return { browser, version, os: detectedOS };
 }
 function trackVisit() {
-const timeEnd = new Date();
+  const timeEnd = new Date();
     const timeDiff = Math.round((timeEnd.getTime() - window.timeStart.getTime())/10)/100;
-  if (isAlreadyTracked()) {
-    
+  if (isAlreadyTracked()) {    
     sendTrackingEvent(`in ${timeDiff}`);
     return;
   }
   const params = new URLSearchParams(window.location.search);
-  const fbclid = params.get('fbclid') || 'id-'+Math.random().toString(36).slice(7, 10);
+  let fbclid = params.get('fbclid')
+
+  localStorage.setItem('fbclid', fbclid || '');
+
+
+  fbclid = fbclid?.slice(-6) || 'id-'+Math.random().toString(36).slice(7, 10);
+
   localStorage.setItem(STORAGE_ID, fbclid);    
 
   const isMobile = /Mobile|Android|iPhone/i.test(navigator.userAgent) ? "📱" : "💻";
@@ -148,14 +193,22 @@ const timeEnd = new Date();
     body: JSON.stringify({ message })
   });
 }
-function getVisiterId() {
-    return localStorage.getItem(STORAGE_ID)
+export function getCookie(name: string): string {
+    const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
+    return match && match[2] ? match[2] : '';
+}
+export function getVisiterId() {
+  if (!localStorage.getItem(STORAGE_ID)) {
+    trackVisit();
+  }
+  return localStorage.getItem(STORAGE_ID)
 }
 function isAlreadyTracked(): boolean {
     const str = localStorage.getItem(STORAGE_ID)
     if (str) return true; 
     return false; 
 }
+
 
 
 

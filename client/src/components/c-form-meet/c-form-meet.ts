@@ -1,40 +1,31 @@
 import { sendTrackingEvent } from "@/main";
 import "./c-form-meet.scss";
+import template from "./c-form-meet.html?raw";
+import "@/components/c-anh-to_bot";
 
-export class CFormMeet extends HTMLElement {     
 
+export class CFormMeet extends HTMLElement {    
   async connectedCallback() {
-    const attr = this.getAttribute('data-attr') || 'f1';
+    const attr = this.getAttribute('data-attr') || 'f1';    
+
     const btnText = this.getAttribute('btn-text') || 'Отправить';
     const bottomText = this.getAttribute('bottom-text') || '';
-    this.innerHTML = `
-    <div class="form-meet">
-        <div class="body">
-            <input type="text" class="name" name="userName" placeholder="Имя" required>
-            <input type="text" class="contact" name="userContact" placeholder="Ник в Telegram или телефон" required>
-            <div class="footer">
-                <button class="btn_send btn-meet">
-                    ${btnText}
-                </button>
-                <div class="bottom-text">${bottomText}</div>
-            </div>
-        </div>
-        
-        <div class="formMessage">
-            Заявка отправлена!
-        </div>
-        <div class="formError">
-            Произошла ошибка при отправке заявки. Попробуйте еще раз.
-        </div>
-    </div>    
-    `    
+
+    this.innerHTML = template
+    .replace('{{btnText}}', btnText)
+    .replace('{{bottomText}}', bottomText);
+    
     const formMeet = this.querySelector('.form-meet') as HTMLFormElement;
     const formBody = this.querySelector('.body') as HTMLFormElement;
     const formMessage = this.querySelector('.formMessage') as HTMLElement;
     const formError = this.querySelector('.formError') as HTMLElement;
     const btnSend = this.querySelector('.btn_send') as HTMLButtonElement;
 
-    if (formMeet) {
+    if (formMeet && formMessage && formError && btnSend) { 
+        
+// formBody.style.display = 'none';
+// formMessage.style.display = 'block';
+
         const userName = formMeet.querySelector('.name') as HTMLInputElement;
         const userContact = formMeet.querySelector('.contact') as HTMLInputElement;
         userName.addEventListener('focus', () => {
@@ -72,6 +63,8 @@ export class CFormMeet extends HTMLElement {
             if (result) {              
                 formBody.style.display = 'none';
                 formMessage.style.display = 'block';
+                (formMessage.querySelector('.ex-message-name') as HTMLElement).innerHTML = userName?.value;
+                (formMessage.querySelector('.ex-message-contact') as HTMLElement).innerHTML = userContact?.value;
             } else {
                 formBody.style.display = 'none';
                 formError.style.display = 'block';

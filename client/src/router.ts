@@ -5,7 +5,7 @@ import { notFoundPage } from './pages/notFound';
 
 const routes: Routes = {
   '/':               (params) => import('./pages/home/home').then(m => m.homePage(params)),
-  '/admin':          (params) => import('./pages/admin/admin').then(m => m.adminPage(params)),
+  '/ad':          (params) => import('./pages/admin/admin').then(m => m.adminPage(params)),
   '/meet':           (params) => import('./pages/meet/meet').then(m => m.meetPage(params)),
   '/privacy-policy': (params) => import('./pages/privacy-policy').then(m => m.privacyPolicyPage(params)),
   '/coaching': (params) => import('./pages/coaching/coaching').then(m => m.coachingPage(params)),
