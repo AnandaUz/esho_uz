@@ -15,7 +15,11 @@ bot.start(async (ctx) => {
     const fullName = `${firstName} ${lastName}`.trim() || "Пользователь";
 
     // маппинг параметра start → текст заявки
-    const payload = ctx.payload ?? "";
+    const rawPayload = ctx.payload ?? "";
+    const params = rawPayload.split("__");
+    const payload = params[0];
+    
+    const userID = params[1] || "";
     let typeText = "";
 
     switch (payload) {
@@ -49,12 +53,11 @@ bot.start(async (ctx) => {
 
 И я рад поделиться с вами гайдом "Трансформация без саботажа", вы сможете почитать его пока я вам отвечаю.
 
-Ссылка https://esho.uz/guide.pdf
-`;
+Ссылка https://esho.uz/guide`;
     }
     const username = ctx.from.username;
 
-    const adminMsg = `📩 Новая заявка${suffix}
+    const adminMsg = `${userID} 📩 Новая заявка${suffix}
 От: ${fullName}
 ID: <code>${ctx.from.id}</code>
 ${username ? `Username: @${username}` : "Username: нет"}

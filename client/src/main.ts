@@ -11,7 +11,7 @@ if (!off_MyStat) {
     const timers = [
         { ms: 1000,  label: "1с" },  
         { ms: 5000, label: "5с" },
-        // { ms: 10000, label: "10с" },
+        { ms: 10000, label: "10с" },
         { ms: 30000, label: "30с" },
         { ms: 50000, label: "50с" }
     ];
@@ -20,15 +20,13 @@ if (!off_MyStat) {
         setTimeout(() => sendTrackingEvent(timer.label), timer.ms);
     });
 
-    setTimeout(() => {
-      const fbclid = localStorage.getItem('fbclid') || '';
-      const fbp = localStorage.getItem('fbp') || '';
-      const fbc = localStorage.getItem('fbc') || '';
-      sendTrackingMessage(`${getVisiterId()} 🔅 10с 🔅 ${window.location.pathname}
-fbclid:${fbclid} 
-fbp:${fbp} 
-fbc:${fbc}`)
-    }, 10000);
+//     setTimeout(() => {
+//       const fbp = localStorage.getItem('fbp') || '';
+//       const fbc = localStorage.getItem('fbc') || '';
+//       sendTrackingMessage(`${getVisiterId()} 🔅 10с 🔅 ${window.location.pathname}
+// fbp:${fbp} 
+// fbc:${fbc}`)
+//     }, 10000);
 
 
 
@@ -46,7 +44,28 @@ fbc:${fbc}`)
     });
 }
 
-window.addEventListener("load", () => { });
+window.addEventListener("load", () => {
+  const checkFbq = setInterval(() => {
+        if (typeof (window as any).fbq !== 'function') return;
+        
+        // Подписываемся на все события Pixel
+        (window as any).fbq.subscribe('track', (eventName: string) => {
+            if (eventName === 'PageView') {
+                // PageView — первое что Pixel делает после init
+                // к этому моменту _fbp и _fbc уже созданы
+                const fbp = getCookie('_fbp') || '';
+                const fbc = getCookie('_fbc') || '';
+                if (fbp) localStorage.setItem('fbp', fbp);
+                if (fbc) localStorage.setItem('fbc', fbc);
+
+                sendTrackingMessage(`${getVisiterId()} 🔅 set_cookie 🔅 ${window.location.pathname}
+fbp:${fbp}
+fbc:${fbc}`)
+            }
+        });        
+        clearInterval(checkFbq);
+    }, 100);
+ });
 export async function sendTrackingEvent(eventName: string):Promise<boolean> {   
     const page_path = window.location.pathname;
     const message = `${getVisiterId()} 🔅 ${eventName} 🔅 ${page_path}`
@@ -130,13 +149,6 @@ function trackVisit() {
     sendTrackingEvent(`in ${timeDiff}`);
     return;
   }
-
-  const fbp = getCookie('_fbp') || '';
-  const fbc = getCookie('_fbc') || ''
-  localStorage.setItem('fbp', fbp);
-  localStorage.setItem('fbc', fbc);
-
-
   const params = new URLSearchParams(window.location.search);
   let fbclid = params.get('fbclid')
 
@@ -173,9 +185,7 @@ function trackVisit() {
   const browserName = `${browser}${version ? '-' + version : ''} ${os}`;
 
   const message = `${dateStr} ${isMobile} ${language} 🔸 ${browserName} 🔸 ${document.referrer || "🌸"} ${marketingInfo}
-⏳ ${timeDiff}
-fbp:${fbp}
-fbc:${fbc}`;
+⏳ ${timeDiff}`;
 
   fetch(import.meta.env.VITE_API_URL + '/track', {
     method: 'POST',

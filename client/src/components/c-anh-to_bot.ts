@@ -8,8 +8,12 @@ export class CAnhToBot extends HTMLElement {
     const attr = this.getAttribute('data-attr') || 'f1';
     const btnText = this.getAttribute('btn-text') || 'Отправить';
     const classAttr = this.getAttribute('data-class') || '';
+    let userID = localStorage.getItem('good_visiter') || '';
+    if (userID) {
+      userID = '__'+userID
+    }
     this.innerHTML = `
-     <a href="${this.botUrl}?start=${attr}"
+     <a href="${this.botUrl}?start=${attr}${userID}"
                class="btn btn-meet "
                target="_blank"
                onclick="fbq('track', 'Lead', {value: 1.00, currency: 'USD', content_name: '${attr}_btn1'});">
@@ -22,11 +26,9 @@ export class CAnhToBot extends HTMLElement {
     this.querySelector('a')?.addEventListener('click', () => {
  const fbp = localStorage.getItem('fbp') || '';
     const fbc = localStorage.getItem('fbc') || '';
-    const fbclid = localStorage.getItem('fbclid') || '';
-    const message = `${getVisiterId()} 🔅 onStartBot
+    const message = `${getVisiterId()} 🚀🚀🚀 on StartBot 🚀🚀🚀
 fbp:${fbp}
-fbc:${fbc}
-fbclid:${fbclid}`
+fbc:${fbc}`
 
       sendTrackingMessage(message);
     });
