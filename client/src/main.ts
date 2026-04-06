@@ -45,26 +45,29 @@ if (!off_MyStat) {
 }
 
 window.addEventListener("load", () => {
-  const checkFbq = setInterval(() => {
-        if (typeof (window as any).fbq !== 'function') return;
-        
-        // Подписываемся на все события Pixel
-        (window as any).fbq.subscribe('track', (eventName: string) => {
-            if (eventName === 'PageView') {
-                // PageView — первое что Pixel делает после init
-                // к этому моменту _fbp и _fbc уже созданы
-                const fbp = getCookie('_fbp') || '';
-                const fbc = getCookie('_fbc') || '';
-                if (fbp) localStorage.setItem('fbp', fbp);
-                if (fbc) localStorage.setItem('fbc', fbc);
 
-                sendTrackingMessage(`${getVisiterId()} 🔅 set_cookie 🔅 ${window.location.pathname}
+  if (typeof (window as any).fbq == 'function') {
+    let count = 0;
+    const checkFbq = setInterval(() => {
+        count++;
+        if (count > 10) {
+            clearInterval(checkFbq);
+        }
+        
+        const fbp = getCookie('_fbp')
+        const fbc = getCookie('_fbc')
+        if (fbp || fbc) {
+            if (fbp) localStorage.setItem('fbp', fbp);
+            if (fbc) localStorage.setItem('fbc', fbc);
+
+            sendTrackingMessage(`${getVisiterId()} 🔅  get cookie
 fbp:${fbp}
 fbc:${fbc}`)
-            }
-        });        
-        clearInterval(checkFbq);
-    }, 100);
+            clearInterval(checkFbq);
+        }
+    }, 1000);
+  }
+  
  });
 export async function sendTrackingEvent(eventName: string):Promise<boolean> {   
     const page_path = window.location.pathname;
