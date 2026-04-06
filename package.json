@@ -8,7 +8,7 @@
     "build:client": "cd client && npm run build",
     "build:server": "cd server && npm run build",
     "build": "npm run build --workspaces --if-present",
-    "snap:all": "tsx .tools/snap.ts"
+    "deploy:prod": "tsx .tools/deploy_prodaction.ts"
   },
   "workspaces": [
     "client",

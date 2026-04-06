@@ -4,13 +4,9 @@ import template from "./c-form-meet.html?raw";
 import "@/components/c-anh-to_bot";
 
 
-export class CFormMeet extends HTMLElement {   
-    
-    
-
+export class CFormMeet extends HTMLElement {    
   async connectedCallback() {
-    const attr = this.getAttribute('data-attr') || 'f1';
-    
+    const attr = this.getAttribute('data-attr') || 'f1';    
 
     const btnText = this.getAttribute('btn-text') || 'Отправить';
     const bottomText = this.getAttribute('bottom-text') || '';
