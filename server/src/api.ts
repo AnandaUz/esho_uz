@@ -39,7 +39,6 @@ bot.start(async (ctx) => {
             typeText = "";
             break;
     }
-
     const suffix = typeText ? ` ${typeText}` : "";
     let clientMsg = `✅ Ваша заявка${suffix} отправлена! В самое ближайшее время я (Ананда @ananda_uz) отвечу вам в личном сообщении`;
 
