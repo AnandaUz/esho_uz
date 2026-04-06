@@ -21,8 +21,7 @@ export class CFormMeet extends HTMLElement {
     const formError = this.querySelector('.formError') as HTMLElement;
     const btnSend = this.querySelector('.btn_send') as HTMLButtonElement;
 
-    if (formMeet && formMessage && formError && btnSend) {  
-
+    if (formMeet && formMessage && formError && btnSend) { 
         
 // formBody.style.display = 'none';
 // formMessage.style.display = 'block';
