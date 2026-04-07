@@ -184,10 +184,9 @@ function trackVisit() {
 
   const fbp = getCookie('_fbp')
   const fbc = getCookie('_fbc')
-  let fbPixelInfo = '';
-  if (fbp || fbc) {    
-    fbPixelInfo = `${fbp ? 'fbp:✔️' : 'fbp:❌'}${fbc ? 'fbc:✔️' : 'fbc:❌'}`;
-  }
+  
+  const fbPixelInfo = `${fbp ? 'fbp:✔️' : 'fbp:❌'}${fbc ? 'fbc:✔️' : 'fbc:❌'}`;
+  
 
   const message = `${dateStr} ${isMobile} ${language} 🔸 ${browserName} 🔸 ${document.referrer || "🌸"}
 ${fbPixelInfo}
