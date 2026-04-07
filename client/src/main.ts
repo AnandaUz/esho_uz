@@ -43,27 +43,35 @@ if (!off_MyStat) {
       }, 300); // 500ms после остановки
     });
 }
+{
+
+    let count = 0;
+    const checkFbq = setInterval(() => {
+        count++;        
+
+        const isPixel = typeof (window as any).fbq == 'function';
+        const fbp = getCookie('_fbp')
+        const fbc = getCookie('_fbc')
+        
+        const fbPixelInfo = `${isPixel ? 'pixel:✔️' : 'pixel:❌'} ${fbp ? 'fbp:✔️' : 'fbp:❌'} ${fbc ? 'fbc:✔️' : 'fbc:❌'}`;
+        
+        if (fbp || fbc) {
+            if (fbp) localStorage.setItem('fbp', fbp);
+            if (fbc) localStorage.setItem('fbc', fbc);
+            
+            clearInterval(checkFbq);
+            sendTrackingMessage(`${getVisiterId()} 🍰 ${fbPixelInfo}`)
+        }
+        if (count > 10) {
+            clearInterval(checkFbq);
+            sendTrackingMessage(`${getVisiterId()} 🍰 ${fbPixelInfo}`)
+        }
+    }, 1000);
+}
 
 window.addEventListener("load", () => {
 
-  // if (typeof (window as any).fbq == 'function') {
-  //   let count = 0;
-  //   const checkFbq = setInterval(() => {
-  //       count++;
-  //       if (count > 10) {
-  //           clearInterval(checkFbq);
-  //       }
-        
-  //       const fbp = getCookie('_fbp')
-  //       const fbc = getCookie('_fbc')
-  //       if (fbp || fbc) {
-  //           if (fbp) localStorage.setItem('fbp', fbp);
-  //           if (fbc) localStorage.setItem('fbc', fbc);
-            
-  //           clearInterval(checkFbq);
-  //       }
-  //   }, 1000);
-  // }
+  
   
  });
 export async function sendTrackingEvent(eventName: string):Promise<boolean> {   
@@ -176,20 +184,14 @@ function trackVisit() {
 
   let marketingInfo = "";
   if (utmString || fbInfo) {
-    marketingInfo = `\n🎯  ${utmString || "Без UTM"}${fbInfo ? `\n${fbInfo}` : ""}`;
+    marketingInfo = `🎯  ${utmString || "Без UTM"}${fbInfo ? `\n${fbInfo}` : ""}`;
   }
 
   const { browser, version, os } = parseUserAgent(navigator.userAgent);
   const browserName = `${browser}${version ? '-' + version : ''} ${os}`;
 
-  const fbp = getCookie('_fbp')
-  const fbc = getCookie('_fbc')
-  
-  const fbPixelInfo = `${fbp ? 'fbp:✔️' : 'fbp:❌'} ${fbc ? 'fbc:✔️' : 'fbc:❌'}`;
-  
-
   const message = `${dateStr} ${isMobile} ${language} 🔸 ${browserName} 🔸 ${document.referrer || "🌸"}
-${fbPixelInfo} ${marketingInfo}
+${marketingInfo}
 ⏳ ${timeDiff}`;
 
   fetch(import.meta.env.VITE_API_URL + '/track', {
