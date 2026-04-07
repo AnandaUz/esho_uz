@@ -1,4 +1,4 @@
-import { getVisiterId, sendTrackingMessage } from "@/main";
+import { getCookie, getVisiterId, sendTrackingMessage } from "@/main";
 
 
 export class CAnhToBot extends HTMLElement {   
@@ -24,8 +24,9 @@ export class CAnhToBot extends HTMLElement {
    
     
     this.querySelector('a')?.addEventListener('click', () => {
- const fbp = localStorage.getItem('fbp') || '';
-    const fbc = localStorage.getItem('fbc') || '';
+    const fbp = getCookie('_fbp')
+    const fbc = getCookie('_fbc')
+        
     const message = `${getVisiterId()} 🚀🚀🚀 on StartBot 🚀🚀🚀
 fbp:${fbp}
 fbc:${fbc}`

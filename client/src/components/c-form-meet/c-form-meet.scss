@@ -1,5 +1,5 @@
 .form-meet {
-  padding: 15px 15px 6px;
+  padding: 7px 15px 6px;
   border-radius: 10px;
   text-align: center;
   box-shadow: 0 2px 12px rgba(0, 100, 100, 0.3333333333);
@@ -12,6 +12,10 @@
 
   color: #5e6b61;
 
+  .header {
+    font-size: 15px;
+    padding: 0 0 6px;
+  }  
   .bottom-text {
     font-size: 14px;
     color: rgb(255 255 255 / 0.45);

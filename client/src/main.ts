@@ -46,27 +46,24 @@ if (!off_MyStat) {
 
 window.addEventListener("load", () => {
 
-  if (typeof (window as any).fbq == 'function') {
-    let count = 0;
-    const checkFbq = setInterval(() => {
-        count++;
-        if (count > 10) {
-            clearInterval(checkFbq);
-        }
+  // if (typeof (window as any).fbq == 'function') {
+  //   let count = 0;
+  //   const checkFbq = setInterval(() => {
+  //       count++;
+  //       if (count > 10) {
+  //           clearInterval(checkFbq);
+  //       }
         
-        const fbp = getCookie('_fbp')
-        const fbc = getCookie('_fbc')
-        if (fbp || fbc) {
-            if (fbp) localStorage.setItem('fbp', fbp);
-            if (fbc) localStorage.setItem('fbc', fbc);
-
-            sendTrackingMessage(`${getVisiterId()} 🔅  get cookie
-fbp:${fbp}
-fbc:${fbc}`)
-            clearInterval(checkFbq);
-        }
-    }, 1000);
-  }
+  //       const fbp = getCookie('_fbp')
+  //       const fbc = getCookie('_fbc')
+  //       if (fbp || fbc) {
+  //           if (fbp) localStorage.setItem('fbp', fbp);
+  //           if (fbc) localStorage.setItem('fbc', fbc);
+            
+  //           clearInterval(checkFbq);
+  //       }
+  //   }, 1000);
+  // }
   
  });
 export async function sendTrackingEvent(eventName: string):Promise<boolean> {   
@@ -82,9 +79,7 @@ export async function sendTrackingEvent(eventName: string):Promise<boolean> {
     });
     return true;
 }
-export async function sendTrackingMessage(message: string):Promise<boolean> {   
-
-    
+export async function sendTrackingMessage(message: string):Promise<boolean> {       
     await fetch(import.meta.env.VITE_API_URL + '/track', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -187,7 +182,16 @@ function trackVisit() {
   const { browser, version, os } = parseUserAgent(navigator.userAgent);
   const browserName = `${browser}${version ? '-' + version : ''} ${os}`;
 
-  const message = `${dateStr} ${isMobile} ${language} 🔸 ${browserName} 🔸 ${document.referrer || "🌸"} ${marketingInfo}
+  const fbp = getCookie('_fbp')
+  const fbc = getCookie('_fbc')
+  let fbPixelInfo = '';
+  if (fbp || fbc) {    
+    fbPixelInfo = `${fbp ? 'fbp:✔️' : 'fbp:❌'}${fbc ? 'fbc:✔️' : 'fbc:❌'}`;
+  }
+
+  const message = `${dateStr} ${isMobile} ${language} 🔸 ${browserName} 🔸 ${document.referrer || "🌸"}
+${fbPixelInfo}
+${marketingInfo}
 ⏳ ${timeDiff}`;
 
   fetch(import.meta.env.VITE_API_URL + '/track', {

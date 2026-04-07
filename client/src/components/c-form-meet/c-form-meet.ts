@@ -1,4 +1,4 @@
-import { sendTrackingEvent } from "@/main";
+import { getCookie, sendTrackingEvent } from "@/main";
 import "./c-form-meet.scss";
 import template from "./c-form-meet.html?raw";
 import "@/components/c-anh-to_bot";
@@ -9,11 +9,13 @@ export class CFormMeet extends HTMLElement {
     const attr = this.getAttribute('data-attr') || 'f1';    
 
     const btnText = this.getAttribute('btn-text') || 'Отправить';
+    const headerText = this.getAttribute('header-text') || '';
     const bottomText = this.getAttribute('bottom-text') || '';
 
     this.innerHTML = template
     .replace('{{btnText}}', btnText)
-    .replace('{{bottomText}}', bottomText);
+    .replace('{{bottomText}}', bottomText)
+    .replace('{{header-text}}', headerText);
     
     const formMeet = this.querySelector('.form-meet') as HTMLFormElement;
     const formBody = this.querySelector('.body') as HTMLFormElement;
@@ -53,11 +55,17 @@ export class CFormMeet extends HTMLElement {
             if (typeof window.fbq === 'function') {
                 fbq('track', 'Lead', {value: 1.00, currency: 'USD', content_name: 'meet_form'});
             }
-
-            const str = `📩 Новая заявка с сайта (Встреча)
+            const fbp = getCookie('_fbp')
+            const fbc = getCookie('_fbc')
+            const userID = localStorage.getItem('good_visiter') || '';
+                
+            const str = `${userID} 📩 Новая заявка с сайта (Встреча)
 Имя: ${userName?.value}
 Контакт: ${userContact?.value}
-Форма: ${attr}`
+Форма: ${attr}
+fbp:${fbp}
+fbc:${fbc}
+`
             const result = await sendTrackingEvent(str);
 
             if (result) {              
