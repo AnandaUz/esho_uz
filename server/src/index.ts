@@ -2,7 +2,6 @@
 // import express from 'express';
 // import cors from 'cors';
 
-import { log } from "node:console";
 
 // import { bot, sendMessageToAdmin } from './api.js';
 // import { admin_bot } from './controllers/tgbot_admin.controller.js';
