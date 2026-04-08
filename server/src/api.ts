@@ -1,5 +1,5 @@
 import { sendMessageTo_mainAdmin } from './controllers/tgbot_admin.controller.js';
-import '@base/shared/server/config.js';
+import '../../_base/server/config.js';
 import { Telegraf } from "telegraf";
 
 const BOT_TOKEN = process.env.BOT_TOKEN || '';

@@ -6,19 +6,14 @@
     "dev:server": "cd server && npm run dev",
     "dev": "concurrently \"npm run dev:client\" \"npm run dev:server\"",
     "build:client": "cd client && npm run build",
-    "build:server": "cd server && npm run build",
-    "build": "npm run build --workspaces --if-present"
+    "build:server": "cd server && npm run build"
   },
   "workspaces": [
     "client",
     "server"
   ],
   "devDependencies": {
-    "@types/express": "^5.0.6",
     "concurrently": "^9.2.1",
     "typescript": "^5.9.3"
-  },
-  "dependencies": {
-    "@base/shared": "file:./_base"
   }
 }

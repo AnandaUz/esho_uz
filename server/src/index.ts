@@ -1,4 +1,4 @@
-import '@base/shared/server/config.js';
+import '../../_base/server/config.js';
 import express from 'express';
 import cors from 'cors';
 

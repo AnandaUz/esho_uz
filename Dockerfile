@@ -17,13 +17,6 @@ COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 COPY _base ./_base
 
-# Универсальное решение: компилируем через указание проекта
-# Проверяем наличие файлов и компилируем всё, что найдем (универсальный способ для Linux)
-RUN ls -R _base/server && \
-    npx tsc $(find _base/server -name "*.ts") --module esnext --target es2022 --moduleResolution node --esModuleInterop --outDir _base/server --rootDir _base/server
-
-
-
 RUN npm run build --workspace=server
 
 
@@ -44,16 +37,10 @@ COPY client/package.json ./client/
 # Install production dependencies
 RUN npm ci --omit=dev --ignore-scripts
 
-# Copy compiled _base from builder stage (contains .js files)
-COPY --from=builder /app/_base ./_base
-
-# Replace symlink with actual compiled files to avoid resolution issues
-RUN rm -rf node_modules/@base/shared && \
-    cp -r _base node_modules/@base/shared
-
-# Copy compiled server code
+# Copy compiled server code (includes compiled _base and server logic)
 COPY --from=builder /app/server/dist ./server/dist
 
 EXPOSE 8080
 
-CMD ["node", "server/dist/index.js"]
+# Путь учитывает вложенность, созданную tsc из-за импортов из _base
+CMD ["node", "server/dist/server/src/index.js"]

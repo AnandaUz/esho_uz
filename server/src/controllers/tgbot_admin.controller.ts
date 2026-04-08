@@ -1,4 +1,4 @@
-import '@base/shared/server/config.js';
+import '../../../_base/server/config.js';
 import { bot as clientBot } from '../api.js';
 
 import { Telegraf } from "telegraf";
