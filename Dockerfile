@@ -38,8 +38,11 @@ COPY client/package.json ./client/
 RUN npm ci --omit=dev --ignore-scripts
 
 # Copy compiled server code (includes compiled _base and server logic)
-COPY --from=builder /app/server/dist ./server/dist
+COPY --from=builder /app/server/dist /app/server/dist
+
+# Verify the file structure in the logs
+RUN find /app/server/dist -name "index.js"
 
 EXPOSE 8080
-# Путь учитывает вложенность, созданную tsc из-за импортов из _base
-CMD ["node", "server/dist/server/src/index.js"]
+# Explicit absolute path for the entrypoint
+CMD ["node", "/app/server/dist/server/src/index.js"]
