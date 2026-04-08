@@ -1,8 +1,8 @@
-import '@base/shared/server/config';
+import '@base/shared/server/config.js';
 import express from 'express';
 import cors from 'cors';
 
-import { bot, sendMessageToAdmin } from './api';
+import { bot, sendMessageToAdmin } from './api.js';
 import { admin_bot } from './controllers/tgbot_admin.controller.js';
 const app = express();
 
