@@ -19,8 +19,8 @@ COPY _base ./_base
 
 RUN npm run build --workspace=server
 
-
-
+# Показать реальную структуру dist
+RUN find /app/server/dist -name "*.js" | head -20
 
 # Stage 3: Runner
 FROM node:22-alpine AS runner

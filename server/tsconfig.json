@@ -6,12 +6,12 @@
     "moduleResolution": "Node",
     "lib": ["ES2022"],
     "types": ["node"],
-    
+
     "outDir": "./dist",
     "baseUrl": ".",
     "paths": {
       "@base/*": ["../_base/*"]
     }
   },
-  "include": ["src/**/*"]
+  "include": ["src/**/*", "../_base/**/*"]
 }
