@@ -1,0 +1,44 @@
+steps:
+  # 0. Инициализация подмодулей (необязательно, если используется Cloud Build Trigger с поддержкой подмодулей, 
+  # но полезно для гарантии наличия папки _base)
+  - name: 'gcr.io/cloud-builders/git'
+    args: ['submodule', 'update', '--init', '--recursive']
+
+  # 1. Сборка Docker-образа
+  # Используем --no-cache по запросу для полной пересборки без старых слоев
+  - name: 'gcr.io/cloud-builders/docker'
+    args: [
+      'build',
+      '--no-cache',
+      '-t', 'gcr.io/$PROJECT_ID/esho-uz:$COMMIT_SHA',
+      '-t', 'gcr.io/$PROJECT_ID/esho-uz:latest',
+      '.'
+    ]
+
+  # 2. Публикация образов в Container Registry
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['push', 'gcr.io/$PROJECT_ID/esho-uz']
+
+  # 3. Деплой в Cloud Run (раскомментируйте, если требуется автоматический деплой)
+  # - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+  #   entrypoint: gcloud
+  #   args:
+  #     - 'run'
+  #     - 'deploy'
+  #     - 'esho-uz'
+  #     - '--image'
+  #     - 'gcr.io/$PROJECT_ID/esho-uz:$COMMIT_SHA'
+  #     - '--region'
+  #     - 'europe-west1' # укажите ваш регион
+  #     - '--platform'
+  #     - 'managed'
+  #     - '--allow-unauthenticated'
+
+# Список образов, которые Cloud Build должен сохранить в хранилище
+images:
+  - 'gcr.io/$PROJECT_ID/esho-uz'
+
+options:
+  # Используем более мощную машину, так как сборка без кеша может занять больше времени
+  machineType: 'E2_HIGHCPU_8'
+  logging: CLOUD_LOGGING_ONLY
