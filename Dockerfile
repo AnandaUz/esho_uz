@@ -18,7 +18,11 @@ COPY . .
 COPY _base ./_base
 
 # Универсальное решение: компилируем через указание проекта
-RUN npx tsc --project _base/server/tsconfig.json
+# Проверяем наличие файлов и компилируем всё, что найдем (универсальный способ для Linux)
+RUN ls -R _base/server && \
+    npx tsc $(find _base/server -name "*.ts") --module esnext --target es2022 --moduleResolution node --esModuleInterop --outDir _base/server --rootDir _base/server
+
+
 
 RUN npm run build --workspace=server
 
