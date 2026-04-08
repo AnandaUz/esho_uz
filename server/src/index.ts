@@ -6,7 +6,7 @@ import { bot, sendMessageToAdmin } from './api.js';
 import { admin_bot } from './controllers/tgbot_admin.controller.js';
 const app = express();
 
-const PORT = process.env.PORT || 8080;
+
 const CLIENT_URL = process.env.CLIENT_URL || '';
 
 app.use(cors({
@@ -33,8 +33,8 @@ app.post('/tg_bot_webhook', (req, res) => {
   
 });
 
-app.listen(PORT, () => {
-    console.log(`Server is running at http://localhost:${PORT}`);
+app.listen(8080, '0.0.0.0', () => {
+    console.log(`Server is running at http://localhost:${8080}`);
 });
-
+``
 
