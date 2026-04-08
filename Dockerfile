@@ -8,7 +8,6 @@ COPY client/package.json ./client/
 COPY _base ./_base
 
 RUN npm ci
-
 # Stage 2: Builder
 FROM node:22-alpine AS builder
 WORKDIR /app
