@@ -15,10 +15,13 @@ WORKDIR /app
 
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
+COPY _base ./_base
 
-# Compile _base first so server build can use it if needed
-RUN cd _base/server && npx tsc
+# Универсальное решение: компилируем через указание проекта
+RUN npx tsc --project _base/server/tsconfig.json
+
 RUN npm run build --workspace=server
+
 
 
 
