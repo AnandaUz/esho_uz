@@ -80,6 +80,5 @@ dist-ssr
 
 .git/
 .agentignore
-.tools/
 
 .woff2

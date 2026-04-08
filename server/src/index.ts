@@ -1,9 +1,9 @@
-import './config';
+import '@base/shared/server/config';
 import express from 'express';
 import cors from 'cors';
 
-import { sendMessageToAdmin, bot } from './api';
-
+import { bot, sendMessageToAdmin } from './api';
+import { admin_bot } from './controllers/tgbot_admin.controller.js';
 const app = express();
 
 const PORT = process.env.PORT || 8080;
@@ -17,6 +17,10 @@ app.use(express.json());
 app.get("/", (_req, res) => {
     res.send("работаю");
 });
+app.post('/tgbot_admin_webhook', (req, res) => {
+  // bot.handleUpdate принимает объект обновления и объект ответа express
+  admin_bot.handleUpdate(req.body, res);
+});
 app.post('/track', async (req, res) => {
   const { message } = req.body;
   if (!message) return res.status(400).json({ ok: false });
@@ -26,6 +30,7 @@ app.post('/track', async (req, res) => {
 // маршрут для Telegram webhook
 app.post('/tg_bot_webhook', (req, res) => {
   bot.handleUpdate(req.body, res);
+  
 });
 
 app.listen(PORT, () => {
