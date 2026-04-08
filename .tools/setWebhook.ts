@@ -15,7 +15,8 @@ const webhookConfig: WebhookConfig = {
     // mode: 'preprod',
     // mode: 'prod',
     // mode: 'adminBot_toLocal',
-    mode: 'ppBot_toLocal',   
+    // mode: 'ppBot_toLocal',   
+    mode: 'adminBot_toProd',
 
     data:{
         prod:{
@@ -47,6 +48,12 @@ const webhookConfig: WebhookConfig = {
             SERVER_URL:fullNgrokUrl,
             apiURL:apiUrlAdmin,
             title:'adminBot_toLocal'
+        },
+        adminBot_toProd:{
+            BOT_TOKEN:process.env.ADMIN_TGBOT_TOKEN || '',
+            SERVER_URL:'https://api.esho.uz',
+            apiURL:apiUrlAdmin,
+            title:'adminBot_toProd'
         },
         ppBot_toLocal:{
             BOT_TOKEN:process.env.BOT_TOKEN || '',
