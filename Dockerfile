@@ -41,6 +41,5 @@ RUN npm ci --omit=dev --ignore-scripts
 COPY --from=builder /app/server/dist ./server/dist
 
 EXPOSE 8080
-
 # Путь учитывает вложенность, созданную tsc из-за импортов из _base
 CMD ["node", "server/dist/server/src/index.js"]
