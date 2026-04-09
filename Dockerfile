@@ -1,19 +1,22 @@
-FROM node:22-alpine
+FROM node:20-slim
+
+
+# Устанавливаем git
+RUN apt-get update && apt-get install -y git && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
 
-COPY package.json package-lock.json ./
-COPY server/package.json ./server/
-COPY shared/ ./shared/
+RUN git clone https://github.com/AnandaUz/_base.git /tmp/_base && \
+    mv /tmp/_base _base && \
+    rm -rf _base/.git
 
-# Устанавливаем ВСЕ зависимости из корня
+COPY package*.json ./
+COPY server/package*.json ./server/
+
 RUN npm install
 
-COPY server/src ./server/src
-COPY server/tsconfig.json ./server/
-COPY tsconfig.base.json ./
+COPY . .
 
 RUN npm run build:server
 
-EXPOSE 8080
-CMD ["node", "server/dist/index.js"]
+CMD ["node", "server/dist/server/src/index.js"]

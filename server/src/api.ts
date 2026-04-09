@@ -1,4 +1,4 @@
-import './config';
+import './config.js';
 import { Telegraf } from "telegraf";
 
 const BOT_TOKEN = process.env.BOT_TOKEN || '';

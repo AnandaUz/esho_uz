@@ -1,8 +1,8 @@
-import './config';
+import './config.js';
 import express from 'express';
 import cors from 'cors';
 
-import { sendMessageToAdmin, bot } from './api';
+import { sendMessageToAdmin, bot } from './api.js';
 
 const app = express();
 
