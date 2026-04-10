@@ -1,3 +1,4 @@
+import { sendMessageTo_mainAdmin } from './controllers/tgbot_admin.controller.js';
 import '../../_base/server/config.js';
 import { Telegraf } from "telegraf";
 
@@ -62,40 +63,30 @@ ID: <code>${ctx.from.id}</code>
 ${username ? `Username: @${username}` : "Username: нет"}
 Ссылка: <a href="tg://user?id=${ctx.from.id}">${fullName}</a>`;
     // Сообщения
-    await sendMessageToAdmin(adminMsg);
+    await sendMessageTo_mainAdmin(adminMsg);
     await ctx.reply(clientMsg);
 });
 
 
 bot.on("message", async (ctx) => {
-    if (!ctx.from) return;
+    if (!ctx.from || !ctx.message) return;
 
-    const firstName = ctx.from.first_name || "";
-    const lastName = ctx.from.last_name || "";
-    const fullName = `${firstName} ${lastName}`.trim() || "Пользователь";
-    const username = ctx.from.username;
+    const msg = ctx.message as any;
+    const clientId = ctx.from.id;
+    const text = msg.text || "[не текст]";
 
-    const userDisplay = username
-        ? `${fullName} (@${username})`
-        : `${fullName} — ID: <code>${ctx.from.id}</code>`;
-
-    const text = (ctx.message as any).text || "[не текст]";
-
-    const adminMsg = `💬 Сообщение от: ${userDisplay}\n\n${text}`;
-    await sendMessageToAdmin(adminMsg);
+    await sendMessageTo_mainAdmin(
+        `/reply <code>${clientId}</code>\n\n${text}`
+    );
 });
 export async function sendMessageToAdmin(message: string) {
     try {
-        await bot.telegram.sendMessage(BOT_ADMIN, message,
-            {
-                parse_mode: 'HTML',
-                link_preview_options: {
-                    is_disabled: true
-                }
-            });
-        return { success: true };
-    } catch (error: any) {
-        console.error("Error sending message to admin:", error);
-        return { success: false, error: error.message };
+        await bot.telegram.sendMessage(BOT_ADMIN, message, {
+            parse_mode: 'HTML',
+            link_preview_options: { is_disabled: true }
+        });
+    } catch (error) {
+        console.error("Error sending to admin:", error);
     }
 }
+
