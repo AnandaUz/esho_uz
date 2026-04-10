@@ -79,7 +79,5 @@ dist-ssr
 *.sw?
 
 .git/
-.agentignore
-.tools/
 
 .woff2
