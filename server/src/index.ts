@@ -1,25 +1,3 @@
-import fs from "fs"
-import path from "path"
-
-function tree(dir: string, prefix = "") {
-  const items = fs.readdirSync(dir, { withFileTypes: true })
-
-  for (const item of items) {
-    console.log(prefix + (item.isDirectory() ? "📁 " : "📄 ") + item.name)
-
-    if (item.isDirectory()) {
-      try {
-        tree(path.join(dir, item.name), prefix + "  ")
-      } catch {}
-    }
-  }
-}
-
-console.log("=== FILE TREE ===")
-tree(".")
-
-//////////
-
 import '../../_base/server/config.js';
 import express from 'express';
 import cors from 'cors';
@@ -42,12 +20,14 @@ app.get("/", (_req, res) => {
 });
 
 app.post('/tgbot_admin_webhook', (req, res) => {
-  // bot.handleUpdate принимает объект обновления и объект ответа express
+  // bot.handleUpdate принимает объект обновления и объект ответа express  
+  console.log('tgbot_admin_webhook');
   admin_bot.handleUpdate(req.body, res);
 });
 
 app.post('/track', async (req, res) => {
   const { message } = req.body;
+  console.log('track');
   if (!message) return res.status(400).json({ ok: false });
   await sendMessageToAdmin(message);
   res.json({ ok: true });
