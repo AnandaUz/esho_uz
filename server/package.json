@@ -2,9 +2,10 @@
   "name": "esho-server",
   "version": "1.0.0",
   "type": "module",
+  
   "scripts": {
     "dev": "tsx watch src/index.ts",
-    "build": "tsc && tsc-alias -p tsconfig.json"
+    "build": "tsc"
   },
   "dependencies": {
     "cors": "^2.8.6",

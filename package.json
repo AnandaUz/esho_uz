@@ -1,6 +1,11 @@
 {
   "name": "esho.uz",
   "version": "0.8.0",
+  "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AnandaUz/esho_uz.git"
+  },
   "scripts": {
     "dev:client": "cd client && npm run dev",
     "dev:server": "cd server && npm run dev",
@@ -13,7 +18,9 @@
     "server"
   ],
   "devDependencies": {
+    "@types/node": "^25.5.2",
     "concurrently": "^9.2.1",
-    "typescript": "^5.9.3"
+    "tsx": "^4.20.5",
+    "typescript": "^6.0.2"
   }
 }

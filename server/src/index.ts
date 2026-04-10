@@ -9,6 +9,7 @@ const app = express();
 
 const CLIENT_URL = process.env.CLIENT_URL || '';
 
+
 app.use(cors({
   origin: CLIENT_URL
 }));
@@ -19,12 +20,14 @@ app.get("/", (_req, res) => {
 });
 
 app.post('/tgbot_admin_webhook', (req, res) => {
-  // bot.handleUpdate принимает объект обновления и объект ответа express
+  // bot.handleUpdate принимает объект обновления и объект ответа express  
+  console.log('tgbot_admin_webhook');
   admin_bot.handleUpdate(req.body, res);
 });
 
 app.post('/track', async (req, res) => {
   const { message } = req.body;
+  console.log('track');
   if (!message) return res.status(400).json({ ok: false });
   await sendMessageToAdmin(message);
   res.json({ ok: true });
@@ -40,4 +43,4 @@ const PORT = Number(process.env.PORT || 8080);
 app.listen(PORT, '0.0.0.0', () => {
     console.log(`Server is running at http://0.0.0.0:${PORT}`);
 });
-
+

@@ -2,18 +2,10 @@
   "$schema": "https://json.schemastore.org/tsconfig",
   "extends": "../tsconfig.base.json",
   "compilerOptions": {
-    "target": "ES2022",
-    "module": "ESNext",
-    "moduleResolution": "Node",
-    "lib": ["ES2022"],
-    "types": ["node"],
-
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
     "outDir": "./dist",
     "rootDir": "../",
-    "baseUrl": ".",
-    "paths": {
-      "@base/*": ["../_base/*"]
-    }
-  },
-  "include": ["src/**/*", "../_base/**/*"]
+    "types": ["node"],       
+  }
 }
