@@ -1,9 +1,8 @@
 {
   "compilerOptions": {
     /* Базовые настройки */
-    "target": "ESNext",
+    "target": "ES2022",
     "module": "ESNext",
-    "moduleResolution": "bundler", 
     "strict": true,                 /* Включаем все проверки (обязательно) */
     "skipLibCheck": true,           /* Ускоряет сборку, не проверяя типы внутри библиотек */
     "esModuleInterop": true,        /* Для нормального импорта CommonJS модулей */
@@ -16,13 +15,6 @@
     "noFallthroughCasesInSwitch": true,
 
     "exactOptionalPropertyTypes": true,
-    "noUncheckedIndexedAccess": true,
-    
-    "ignoreDeprecations": "6.0",
-    "baseUrl": "../",
-    "paths": {
-      "@base/*": ["./_base/*"],
-      "@shared/*": ["./shared/*"] 
-    }
+    "noUncheckedIndexedAccess": true,      
   }
 }

@@ -1,19 +1,10 @@
 {
   "extends": "../tsconfig.base.json",
   "compilerOptions": {
-
     "module": "NodeNext",
     "moduleResolution": "NodeNext",
-
     "outDir": "./dist",
     "rootDir": "../",
-
-    "ignoreDeprecations": "6.0",
-    "baseUrl": "../",
-
-    "types": ["node"],
-    "paths": {
-      "@base/*": ["./_base/*"]
-    }
+    "types": ["node"],       
   }
 }
