@@ -1,3 +1,25 @@
+import fs from "fs"
+import path from "path"
+
+function tree(dir: string, prefix = "") {
+  const items = fs.readdirSync(dir, { withFileTypes: true })
+
+  for (const item of items) {
+    console.log(prefix + (item.isDirectory() ? "📁 " : "📄 ") + item.name)
+
+    if (item.isDirectory()) {
+      try {
+        tree(path.join(dir, item.name), prefix + "  ")
+      } catch {}
+    }
+  }
+}
+
+console.log("=== FILE TREE ===")
+tree(".")
+
+//////////
+
 import '../../_base/server/config.js';
 import express from 'express';
 import cors from 'cors';
