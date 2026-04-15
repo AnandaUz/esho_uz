@@ -16,7 +16,7 @@ export class CAnhToBot extends HTMLElement {
      <a href="${botUrl}?start=${attr}${userID}"
                class="btn btn-meet "
                target="_blank"
-               onclick="fbq('track', 'Lead', {value: 1.00, currency: 'USD', content_name: '${attr}_btn1'});">
+               onclick="fbq('track', 'Contact', {value: 0.50, currency: 'USD', content_name: '${attr}_btn1'});">
                 <span class="${classAttr}">${btnText}</span>
             </a>
      `   
