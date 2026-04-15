@@ -2,8 +2,9 @@ import '../../_base/server/config.js';
 import express from 'express';
 import cors from 'cors';
 
-import { bot, sendMessageToAdmin } from './api.js';
-import { admin_bot } from './controllers/tgbot_admin.controller.js';
+import { sendMessageToAdmin } from './api.js';
+import { admin_bot, sendMessageTo_mainAdmin } from './controllers/tgbot_admin.controller.js';
+import { botRegistry } from './bots/botRegistry.js';
 
 const app = express();
 
@@ -21,20 +22,33 @@ app.get("/", (_req, res) => {
 
 app.post('/tgbot_admin_webhook', (req, res) => {
   // bot.handleUpdate принимает объект обновления и объект ответа express  
-  console.log('tgbot_admin_webhook');
   admin_bot.handleUpdate(req.body, res);
 });
 
 app.post('/track', async (req, res) => {
   const { message } = req.body;
-  console.log('track');
+
   if (!message) return res.status(400).json({ ok: false });
   await sendMessageToAdmin(message);
+  res.json({ ok: true });
+});
+app.post('/track_admin', async (req, res) => {
+  const { message } = req.body;
+  if (!message) return res.status(400).json({ ok: false });
+  await sendMessageTo_mainAdmin(message);
   res.json({ ok: true });
 });
 
 // маршрут для Telegram webhook
 app.post('/tg_bot_webhook', (req, res) => {
+  const mode = req.query.mode as string;
+  const bot = botRegistry.get(mode);
+
+  if (!bot) {
+    res.status(400).send(`Unknown bot mode: ${mode}`);
+    return;
+  }
+
   bot.handleUpdate(req.body, res);
 });
 
