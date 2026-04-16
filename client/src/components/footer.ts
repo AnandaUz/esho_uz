@@ -9,11 +9,11 @@ export function renderFooter(): void {
         </a>
 
     </p>
-    <p>© 2025 Ананда Шадрин</p>
+    <p>© 2025-2026 <a href="https://t.me/ananda_uz">Ананда Шадрин</a></p>
 
     <a href="/privacy-policy" target="_blank" class="anh2">
         Политика конфиденциальности
     </a>
 
   `;
-}// src/components/footer.ts
+}

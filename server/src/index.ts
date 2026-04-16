@@ -4,7 +4,8 @@ import cors from 'cors';
 
 import { sendMessageToAdmin } from './api.js';
 import { admin_bot, sendMessageTo_mainAdmin } from './controllers/tgbot_admin.controller.js';
-import { botRegistry } from './bots/botRegistry.js';
+import { botRegistry } from './bots/botRegistry.js'
+import trackerRouter from './routers/tracker.routers.js';
 
 const app = express();
 
@@ -51,6 +52,8 @@ app.post('/tg_bot_webhook', (req, res) => {
 
   bot.handleUpdate(req.body, res);
 });
+
+app.use('/tracker', trackerRouter);
 
 const PORT = Number(process.env.PORT || 8080);
 
