@@ -11,6 +11,7 @@ const routes: Routes = {
   '/coaching': (params) => import('./pages/coaching/coaching').then(m => m.coachingPage(params)),
   '/mastermind': (params) => import('./pages/mastermind/mastermind').then(m => m.mastermindPage(params)),
   '/guide': (params) => import('./pages/guide/guide').then(m => m.guidePage(params)),
+  '/meditation': (params) => import('@pages/meditation/meditation').then(m => m.meditationPage(params)),
 
 };
 

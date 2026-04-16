@@ -25,8 +25,9 @@
       "@pages/*": ["./src/pages/*"],
       "@assets/*": ["./src/assets/*"],
       "@styles/*": ["./src/styles/*"],
-      "@shared/*": ["../shared/*"]
+      "@shared/*": ["../shared/*"],
+      "@base/*": ["../_base/*"]
     }
-  },
-  "include": ["src", "../shared", "../_base"]
+  }
+
 }

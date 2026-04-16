@@ -98,6 +98,17 @@ export async function sendTrackingMessage(message: string):Promise<boolean> {
     });
     return true;
 }
+export async function sendMessageToAdmin(message: string):Promise<boolean> {       
+    await fetch(import.meta.env.VITE_API_URL + '/track_admin', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({message})
+    }).catch(err =>  {
+      console.log('Tracking error:', err);
+      return false;
+    });
+    return true;
+}
 function parseUserAgent(ua: string): { browser: string; version: string; os: string } {
   if (!ua) return { browser: 'Unknown', version: '', os: 'Unknown' };
 
