@@ -17,7 +17,7 @@ const fullNgrokUrl = `https://${ngrokUrl}.ngrok-free.app`
 //- админский бот
 //-- пока один
 const links:Links = {
-    'подключить медитация-клиент бот (прод) к Апи':{
+    'подключить медитация-клиент бот ПРОД к Апи':{
         BOT_TOKEN:process.env.MEDITATION_BOT_TOKEN || '',
         SERVER_URL:serverBase,
         apiURL:apiUrl+'?mode=meditation',
@@ -79,5 +79,6 @@ const links:Links = {
 // setWebhook2('подключить медитация-клиент бот (прод) к ngrok',links);
 // setWebhook2('подключить медитация-клиент бот (прод) к Апи',links);
 
-setWebhook2('подключить мастермайнд-клиент бот ПРОД к Апи',links);
+// setWebhook2('подключить мастермайнд-клиент бот ПРОД к Апи',links);
 
+setWebhook2('подключить медитация-клиент бот ПРОД к Апи',links);
