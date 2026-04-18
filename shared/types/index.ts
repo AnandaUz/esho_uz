@@ -1,0 +1,2 @@
+import { IGuest } from "./IGuest";
+
