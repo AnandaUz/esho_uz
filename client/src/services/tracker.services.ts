@@ -2,6 +2,7 @@ import type { IGuest } from "@shared/types/IGuest";
 import { parseUserAgent, getCookie } from "./tracker.tools";
 
 const API_URL = 'https://ishvara-api-7097239392.europe-west1.run.app' + '/api/tracker';
+// const API_URL = 'http://localhost:8080' + '/api/tracker';
 const off_MyStat = localStorage.getItem('off_MyStat') === 'true';
 const STORAGE_ID = 'guestID';
 
@@ -59,7 +60,7 @@ class Guest {
       if (i !== this.scrollLever) {
         this.scrollLever = i;
        this.track(EVENT_CODE[`scroll${i}` as keyof typeof EVENT_CODE]);
-        console.log(i);
+        // console.log(i);
       }        
     });
     let count = 0;
@@ -93,10 +94,10 @@ class Guest {
     
   }
   async init() {      
-    if (off_MyStat) {
-      console.log('off_MyStat is true');
-      return;
-    }
+    // if (off_MyStat) {
+    //   console.log('off_MyStat is true');
+    //   return;
+    // }
 
     // 1. Проверяем, нет ли уже ID в sessionStorage
     this._id = localStorage.getItem(STORAGE_ID);
