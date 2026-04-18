@@ -1,33 +1,14 @@
-import mongoose, { Schema, Document } from 'mongoose'
+import mongoose, { Schema } from 'mongoose'
+import { IGuest } from '../../../shared/types/IGuest.js';
 
-export interface IGuest extends Document<string> {
-  _id: string          // session id
-  createdAt: Date
-  ua?: string            // user agent
-
-  tg?: {
-    id: string
-    first_name?: string
-    last_name?: string
-    username?: string
-  }
-  instagram?: {
-    pixel?:boolean
-    fbp?: string          // _fbp cookie от Facebook
-    fbc?: string          // _fbc cookie
-    comp_name?: string
-    adset_name?: string
-    ad_name?: string
-  }
-  maxScroll?: number     // максимальный скролл %
-  duration?: number      // время на странице в секундах
-  events?: [number, number][]  // [[время, код], ...]
+interface IGuestDocument extends Omit<IGuest, '_id'> {
+    _id:      mongoose.Types.ObjectId;
 }
 
-const GuestSchema = new Schema<IGuest>({
-  _id:       { type: String, required: true, unique: true },
+const GuestSchema = new Schema<IGuestDocument>({  
   createdAt: { type: Date, default: Date.now },
   ua:        { type: String },
+  referrer:  { type: String },
   tg: {
     id: { type: String },
     first_name: { type: String },
@@ -49,4 +30,4 @@ const GuestSchema = new Schema<IGuest>({
 
 GuestSchema.index({ 'instagram.comp_name': 1 })
 
-export default mongoose.model<IGuest>('Guests', GuestSchema)
+export default mongoose.model<IGuestDocument>('Guests', GuestSchema)
