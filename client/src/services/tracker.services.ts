@@ -1,7 +1,7 @@
 import type { IGuest } from "@shared/types/IGuest";
 import { parseUserAgent, getCookie } from "./tracker.tools";
 
-const API_URL = import.meta.env.VITE_API_URL + '/api/tracker';
+const API_URL = 'https://ishvara-api-7097239392.europe-west1.run.app' + '/api/tracker';
 const off_MyStat = localStorage.getItem('off_MyStat') === 'true';
 const STORAGE_ID = 'guestID';
 
