@@ -121,11 +121,9 @@ class Guest {
       const url = new URL(document.referrer)
       this.data.referrer = url.pathname  // → "/meditation"
     }
-
-    const isPixel = typeof (window as any).fbq == 'function';
     
     this.data.instagram = {
-        pixel: isPixel,          
+        
     }
     const inst = this.data.instagram;
     const comp_name = urlParams.get('comp_name');
@@ -142,6 +140,7 @@ class Guest {
       const key1 = urlParams.get('key1');        
       if (key1) inst.ad_name = key1;
     }  
+    if (!inst.comp_name) inst.comp_name = window.location.search;
 
     // console.log(this.data);
     // return
