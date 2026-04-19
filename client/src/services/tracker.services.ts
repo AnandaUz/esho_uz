@@ -168,7 +168,7 @@ class Guest {
     }
   }
   track(code: number) {
-    const sec = Math.floor((Date.now() - this.startTime.getTime()) / 1000)
+    const sec = Math.round((Date.now() - this.startTime.getTime()) / 100)/10
     if (code === EVENT_CODE.inPage) {
       this.events.push([sec, window.location.pathname])
       return;
