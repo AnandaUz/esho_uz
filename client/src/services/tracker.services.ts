@@ -140,7 +140,7 @@ class Guest {
       const key1 = urlParams.get('key1');        
       if (key1) inst.ad_name = key1;
     }  
-    this.data.paramsString = window.location.search;
+    this.data.paramsString = '-'+window.location.search;
 
     // console.log(this.data);
     // return
