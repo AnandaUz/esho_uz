@@ -53,28 +53,28 @@ if (!off_MyStat) {
 }
 {
 
-    let count = 0;
-    const checkFbq = setInterval(() => {
-        count++;        
+    // let count = 0;
+    // const checkFbq = setInterval(() => {
+    //     count++;        
 
-        const isPixel = typeof (window as any).fbq == 'function';
-        const fbp = getCookie('_fbp')
-        const fbc = getCookie('_fbc')
+    //     const isPixel = typeof (window as any).fbq == 'function';
+    //     const fbp = getCookie('_fbp')
+    //     const fbc = getCookie('_fbc')
         
-        const fbPixelInfo = `${isPixel ? 'pixel:✔️' : 'pixel:❌'} ${fbp ? 'fbp:✔️' : 'fbp:❌'} ${fbc ? 'fbc:✔️' : 'fbc:❌'}`;
+    //     const fbPixelInfo = `${isPixel ? 'pixel:✔️' : 'pixel:❌'} ${fbp ? 'fbp:✔️' : 'fbp:❌'} ${fbc ? 'fbc:✔️' : 'fbc:❌'}`;
         
-        if (fbp || fbc) {
-            if (fbp) localStorage.setItem('fbp', fbp);
-            if (fbc) localStorage.setItem('fbc', fbc);
+    //     if (fbp || fbc) {
+    //         if (fbp) localStorage.setItem('fbp', fbp);
+    //         if (fbc) localStorage.setItem('fbc', fbc);
             
-            clearInterval(checkFbq);
-            sendTrackingMessage(`${getVisiterId()} 🍰 ${fbPixelInfo}`)
-        }
-        if (count > 10) {
-            clearInterval(checkFbq);
-            sendTrackingMessage(`${getVisiterId()} 🍰 ${fbPixelInfo}`)
-        }
-    }, 1000);
+    //         clearInterval(checkFbq);
+    //         sendTrackingMessage(`${getVisiterId()} 🍰 ${fbPixelInfo}`)
+    //     }
+    //     if (count > 10) {
+    //         clearInterval(checkFbq);
+    //         sendTrackingMessage(`${getVisiterId()} 🍰 ${fbPixelInfo}`)
+    //     }
+    // }, 1000);
 }
 
 window.addEventListener("load", () => {

@@ -1,54 +1,69 @@
 import type { IGuest } from "@shared/types/IGuest";
 import { parseUserAgent, getCookie } from "./tracker.tools";
 
-const API_URL = 'https://ishvara-api-7097239392.europe-west1.run.app' + '/api/tracker';
-// const API_URL = 'http://localhost:8080' + '/api/tracker';
+// const API_URL = 'https://ishvara-api-7097239392.europe-west1.run.app' + '/api/tracker';
+const API_URL = 'http://localhost:8080' + '/api/tracker';
 // const off_MyStat = localStorage.getItem('off_MyStat') === 'true';
 const STORAGE_ID = 'guestID';
+
+const dever_name = localStorage.getItem('good_visiter');
 
 // http://localhost:5173/meditation?comp_name=MeditationTashkent&adset_name=contact&ad_name=v-meditation-0
 // utm_source=inst&utm_campaign=lead&utm_content=s_interesami&key1=video0
 
 //const path = 
 
-const EVENT_CODE = {
-  scroll0:1,
-  scroll1:2,
-  scroll2:3,
-  scroll3:4,
-  scroll4:5,
-  scroll5:6,
-  scroll6:7,
-  inPage:8,
-  outPage:9,
-  goalBtnClick:10,
+interface IEventCodeItem {
+  name?: string;
+  code: number;
+  title?: string;
+  color?: string;
+  class?: string;
+} 
+export const EVENT_CODE = {
+  scroll0:{code:1,title:'0%',class:'scroll s0'},
+  scroll1:{code:2,title:'16%',class:'scroll s1'},
+  scroll2:{code:3,title:'33%',class:'scroll s2'},
+  scroll3:{code:4,title:'50%',class:'scroll s3'},
+  scroll4:{code:5,title:'66%',class:'scroll s4'},
+  scroll5:{code:6,title:'83%',class:'scroll s5'},
+  scroll6:{code:7,title:'100%',class:'scroll s6'},
+  inPage:{code:8,title:'Вход на страницу',class:'page-in'},
+  outPage:{code:9,title:'Выход со страницы',class:'page-out'},
+  goalBtnClick:{code:10,title:'Клик по кнопке цели',class:'goalBtnClick'},
+} as const satisfies Record<string, IEventCodeItem>
 
-} as const
-
-type TEventItem = [number, number|string]
+type TEventItem = [number|string, number|string]
 class Guest {
   private _id: string | null = null;
 
   private data: IGuest | null = null;
-  startTime: Date;
+  startTime: Date = new Date();
   events: TEventItem[] = [];
   scrollLever:number = 0;
   
 
   constructor() {
-    this.startTime = new Date();
+    if (!EVENT_CODE) {
+      console.error('EVENT_CODE is not defined');
+      return;
+    }
     
     setInterval(() => this.flush(), 2_000)
 
 // // При уходе со страницы — надёжно на мобильных
     document.addEventListener('visibilitychange', () => {
       if (document.visibilityState === 'hidden') {
-        this.track(EVENT_CODE.outPage);
+        this.track(EVENT_CODE.outPage!.code);
         this.flush(new Date())
+      }
+      if (document.visibilityState === 'visible') {
+        this.startTime = new Date();
+        this.track(EVENT_CODE.inPage!.code);
+        
       }
     })
     this.setBaseEvents();
-    this.track(EVENT_CODE.inPage);
   }
   setBaseEvents() {
     window.addEventListener('scroll', () => {
@@ -59,8 +74,8 @@ class Guest {
 
       if (i !== this.scrollLever) {
         this.scrollLever = i;
-       this.track(EVENT_CODE[`scroll${i}` as keyof typeof EVENT_CODE]);
-        // console.log(i);
+        const key = `scroll${i}` as keyof typeof EVENT_CODE;
+        if (EVENT_CODE[key]) this.track(EVENT_CODE[key]!.code);
       }        
     });
     let count = 0;
@@ -98,8 +113,9 @@ class Guest {
     //   console.log('off_MyStat is true');
     //   return;
     // }
+    
+    this.track(EVENT_CODE.inPage.code);
 
-    // 1. Проверяем, нет ли уже ID в sessionStorage
     this._id = localStorage.getItem(STORAGE_ID);
     if (this._id) return this._id;
     
@@ -112,7 +128,7 @@ class Guest {
     this.data = {
       _id: '',
       createdAt: new Date(),
-      ua: `${browser}${version ? '-' + version : ''}${os}`,
+      ua: `${browser} ${version ? '-' + version : ''}${os}`,
       isMobile: isMobile,
     } as IGuest
 
@@ -140,10 +156,19 @@ class Guest {
       const key1 = urlParams.get('key1');        
       if (key1) inst.ad_name = key1;
     }  
-    this.data.paramsString = '-'+window.location.search;
+    if (!inst.comp_name) {
+      this.data.paramsString = window.location.search;
+    }
+    
 
     // console.log(this.data);
     // return
+
+    {
+      if (dever_name) {
+        this.data.name = dever_name;
+      }
+    }
     
     try {
     // 4. Запрашиваем создание сессии
@@ -160,17 +185,18 @@ class Guest {
     // 5. Сохраняем полученный от Монго ID
     if (data._id) {
           localStorage.setItem(STORAGE_ID, data._id);
+          this._id = data._id;          
           return data._id;
     }
     } catch (err) {
-    console.error('Session init error:', err);
-    return null;
+      console.error('Session init error:', err);
+      return null;
     }
   }
   track(code: number) {
     const sec = Math.round((Date.now() - this.startTime.getTime()) / 100)/10
-    if (code === EVENT_CODE.inPage) {
-      this.events.push([sec, window.location.pathname])
+    if (code === EVENT_CODE.inPage.code) {
+      this.events.push(['t'+ (new Date().getTime()), window.location.pathname])
       return;
     }
     
@@ -187,14 +213,14 @@ class Guest {
     // отправляем накопленное и чистим
   flush(lastChange:Date|null=null) {
     if (this.events.length === 0) return
+    if (!this._id) return;
     
     const payload = [...this.events]  // копия
     this.events = []                  // очищаем сразу
     
 
-    if (!this._id) {
-      this.init();
-    }
+    
+
     navigator.sendBeacon(
       API_URL + '/push-events',
       new Blob([JSON.stringify({ _id: this._id, events: payload, lastChange })], { type: 'application/json' })
@@ -206,7 +232,7 @@ const guest = new Guest();
 
 (window as any).guestTrack = (code:number | string)=>{
   if (typeof code === 'string') {
-    code = EVENT_CODE[code as keyof typeof EVENT_CODE];
+    code = EVENT_CODE[code as keyof typeof EVENT_CODE].code;
   }
   guest.track(code);
 }

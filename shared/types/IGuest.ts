@@ -26,5 +26,5 @@ export interface IGuest {
   paramsString?: string
   maxScroll?: number     // максимальный скролл %
   duration?: number      // время на странице в секундах
-  events?: [number, number][]  // [[время, код], ...]
+  events?: [number|string, number|string][]  // [[время, код], ...]
 }
