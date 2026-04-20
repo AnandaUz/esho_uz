@@ -1,7 +1,7 @@
 import type { IGuest } from "@shared/types/IGuest";
 import { parseUserAgent, getCookie } from "./tracker.tools";
 
-const API_URL = 'https://ishvara-api-7097239392.europe-west1.run.app' + '/api/tracker';
+const API_URL = import.meta.env.VITE_API_URL + '/api/tracker';
 // const API_URL = 'http://localhost:8080' + '/api/tracker';
 // const off_MyStat = localStorage.getItem('off_MyStat') === 'true';
 const STORAGE_ID = 'guestID';
@@ -10,6 +10,7 @@ const dever_name = localStorage.getItem('good_visiter');
 
 // http://localhost:5173/meditation?comp_name=MeditationTashkent&adset_name=contact&ad_name=v-meditation-0
 // utm_source=inst&utm_campaign=lead&utm_content=s_interesami&key1=video0
+// ?utm_source=inst&utm_campaign=lead2&utm_content=s_interesami2&key1=video1&utm_medium=paid&utm_id=6925035325113&utm_term=6925035324713&fbclid=PAZXh0bgNhZW0BMABhZGlkAAAGTFzD8hFzcnRjBmFwcF9pZA81NjcwNjczNDMzNTI0MjcAAadDPj2gttDHkTPYLkz521tBg23QQSwDhKY0Z78F72VCfqTMAeGP795Nu3vFFA_aem_eJZxO5rWljtYD03HkyiaUQ
 
 //const path = 
 
@@ -59,7 +60,7 @@ class Guest {
       }
       if (document.visibilityState === 'visible') {
         this.startTime = new Date();
-        this.track(EVENT_CODE.inPage!.code);
+        this.track(EVENT_CODE.inPage.code);
         
       }
     })
@@ -114,7 +115,7 @@ class Guest {
     //   return;
     // }
     
-    this.track(EVENT_CODE.inPage.code);
+    // this.track(EVENT_CODE.inPage.code);
 
     this._id = localStorage.getItem(STORAGE_ID);
     if (this._id) return this._id;
@@ -149,16 +150,26 @@ class Guest {
     if (adset_name) inst.adset_name = adset_name;
     if (ad_name) inst.ad_name = ad_name;
 
-    const utm_campaign = urlParams.get('utm_campaign');
-    if (utm_campaign === 'lead') {
-      inst.comp_name = 'lead';
-      inst.adset_name = 'lead-with-interests';        
-      const key1 = urlParams.get('key1');        
-      if (key1) inst.ad_name = key1;
-    }  
-    if (!inst.comp_name) {
-      this.data.paramsString = window.location.search;
+    {
+      //для совместимости
+      const utm_campaign = urlParams.get('utm_campaign');
+      if (utm_campaign === 'lead') {
+        inst.comp_name = 'lead';
+        inst.adset_name = 'lead-with-interests';        
+        const key1 = urlParams.get('key1');        
+        if (key1) inst.ad_name = key1;
+      }
+      if (utm_campaign === 'lead2') {
+        inst.comp_name = 'lead';
+        inst.adset_name = 'lead-with-interests';        
+        const key1 = urlParams.get('key1');        
+        if (key1) inst.ad_name = key1;
+      } 
+      if (!inst.comp_name) {
+        this.data.paramsString = window.location.search;
+      }
     }
+    
     
 
     // console.log(this.data);
