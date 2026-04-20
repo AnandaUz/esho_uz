@@ -1,7 +1,7 @@
 import type { IGuest } from "@shared/types/IGuest";
 import { parseUserAgent, getCookie } from "./tracker.tools";
 
-const API_URL = import.meta.env.VITE_API_URL + '/api/tracker';
+const API_URL = import.meta.env.VITE_API_URL2 + '/api/tracker';
 // const API_URL = 'http://localhost:8080' + '/api/tracker';
 // const off_MyStat = localStorage.getItem('off_MyStat') === 'true';
 const STORAGE_ID = 'guestID';
