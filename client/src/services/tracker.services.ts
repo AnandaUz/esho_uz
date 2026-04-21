@@ -32,6 +32,7 @@ export const EVENT_CODE = {
   inPage:{code:8,title:'Вход на страницу',class:'page-in'},
   outPage:{code:9,title:'Выход со страницы',class:'page-out'},
   goalBtnClick:{code:10,title:'Клик по кнопке цели',class:'goalBtnClick'},
+  showPage:{code:11,title:'Показ страницы',class:'show-page'},
 } as const satisfies Record<string, IEventCodeItem>
 
 type TEventItem = [number|string, number|string]
@@ -60,8 +61,7 @@ class Guest {
       }
       if (document.visibilityState === 'visible') {
         this.startTime = new Date();
-        this.track(EVENT_CODE.inPage.code);
-        
+        this.track(EVENT_CODE.showPage.code);        
       }
     })
     this.setBaseEvents();
@@ -114,11 +114,13 @@ class Guest {
     //   console.log('off_MyStat is true');
     //   return;
     // }
-    
-    // this.track(EVENT_CODE.inPage.code);
+
+    this.track(EVENT_CODE.inPage.code);
 
     this._id = localStorage.getItem(STORAGE_ID);
     if (this._id) return this._id;
+
+    
     
     const urlParams = new URLSearchParams(window.location.search);      
 
@@ -196,7 +198,9 @@ class Guest {
     // 5. Сохраняем полученный от Монго ID
     if (data._id) {
           localStorage.setItem(STORAGE_ID, data._id);
-          this._id = data._id;          
+          this._id = data._id;      
+          
+          this.flush();
           return data._id;
     }
     } catch (err) {

@@ -18,9 +18,9 @@ export class CAnhToBot extends HTMLElement {
      `   
     
     this.querySelector('a')?.addEventListener('click', () => {
-      const guest = (window as any).guest;
-      if (guest) {
-        guest.track('goalBtnClick');
+      const track = (window as any).guestTrack;
+      if (track) {
+        track('goalBtnClick');
       }
       // const fbq = (window as any).fbq;
       // if (fbq) {
