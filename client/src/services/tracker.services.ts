@@ -37,6 +37,11 @@ export const EVENT_CODE = {
     class: "goalBtnClick",
   },
   showPage: { code: 11, title: "Показ страницы", class: "show-page" },
+  goalBtnGaude: {
+    code: 12,
+    title: "Открыли гайд",
+    class: "goalBtnGaude",
+  },
 } as const satisfies Record<string, IEventCodeItem>;
 
 type TEventItem = [number | string, number | string];
