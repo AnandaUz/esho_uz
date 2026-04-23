@@ -175,11 +175,11 @@ class Guest {
     // console.log(this.data);
     // return
 
-    {
-      if (dever_name) {
-        this.data.name = dever_name;
-      }
-    }
+    // {
+    //   if (dever_name) {
+    //     this.data.name = dever_name;
+    //   }
+    // }
 
     try {
       // 4. Запрашиваем создание сессии
