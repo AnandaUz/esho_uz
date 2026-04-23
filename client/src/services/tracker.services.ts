@@ -1,217 +1,257 @@
 import type { IGuest } from "@shared/types/IGuest";
-import { parseUserAgent, getCookie } from "./tracker.tools";
+import { getCookie } from "./tracker.tools";
 
-const API_URL = 'https://ishvara-api-7097239392.europe-west1.run.app' + '/api/tracker';
-const off_MyStat = localStorage.getItem('off_MyStat') === 'true';
-const STORAGE_ID = 'guestID';
+const API_URL = import.meta.env.VITE_API_URL2 + "/api/tracker";
+// const API_URL = 'http://localhost:8080' + '/api/tracker';
+// const off_MyStat = localStorage.getItem('off_MyStat') === 'true';
+const STORAGE_ID = "guestID";
+
+const dever_name = localStorage.getItem("good_visiter");
 
 // http://localhost:5173/meditation?comp_name=MeditationTashkent&adset_name=contact&ad_name=v-meditation-0
 // utm_source=inst&utm_campaign=lead&utm_content=s_interesami&key1=video0
+// ?utm_source=inst&utm_campaign=lead2&utm_content=s_interesami2&key1=video1&utm_medium=paid&utm_id=6925035325113&utm_term=6925035324713&fbclid=PAZXh0bgNhZW0BMABhZGlkAAAGTFzD8hFzcnRjBmFwcF9pZA81NjcwNjczNDMzNTI0MjcAAadDPj2gttDHkTPYLkz521tBg23QQSwDhKY0Z78F72VCfqTMAeGP795Nu3vFFA_aem_eJZxO5rWljtYD03HkyiaUQ
 
-//const path = 
+//const path =
 
-const EVENT_CODE = {
-  scroll0:1,
-  scroll1:2,
-  scroll2:3,
-  scroll3:4,
-  scroll4:5,
-  scroll5:6,
-  scroll6:7,
-  inPage:8,
-  outPage:9,
-  goalBtnClick:10,
+interface IEventCodeItem {
+  name?: string;
+  code: number;
+  title?: string;
+  color?: string;
+  class?: string;
+}
+export const EVENT_CODE = {
+  scroll0: { code: 1, title: "0%", class: "scroll s0" },
+  scroll1: { code: 2, title: "16%", class: "scroll s1" },
+  scroll2: { code: 3, title: "33%", class: "scroll s2" },
+  scroll3: { code: 4, title: "50%", class: "scroll s3" },
+  scroll4: { code: 5, title: "66%", class: "scroll s4" },
+  scroll5: { code: 6, title: "83%", class: "scroll s5" },
+  scroll6: { code: 7, title: "100%", class: "scroll s6" },
+  inPage: { code: 8, title: "Вход на страницу", class: "page-in" },
+  outPage: { code: 9, title: "Выход со страницы", class: "page-out" },
+  goalBtnClick: {
+    code: 10,
+    title: "Клик по кнопке цели",
+    class: "goalBtnClick",
+  },
+  showPage: { code: 11, title: "Показ страницы", class: "show-page" },
+  goalBtnGaude: {
+    code: 12,
+    title: "Открыли гайд",
+    class: "goalBtnGaude",
+  },
+} as const satisfies Record<string, IEventCodeItem>;
 
-} as const
-
-type TEventItem = [number, number|string]
+type TEventItem = [number | string, number | string];
 class Guest {
   private _id: string | null = null;
 
   private data: IGuest | null = null;
-  startTime: Date;
+  startTime: Date = new Date();
   events: TEventItem[] = [];
-  scrollLever:number = 0;
-  
+  scrollLever: number = 0;
 
   constructor() {
-    this.startTime = new Date();
-    
-    setInterval(() => this.flush(), 2_000)
-
-// // При уходе со страницы — надёжно на мобильных
-    document.addEventListener('visibilitychange', () => {
-      if (document.visibilityState === 'hidden') {
-        this.track(EVENT_CODE.outPage);
-        this.flush(new Date())
-      }
-    })
-    this.setBaseEvents();
-    this.track(EVENT_CODE.inPage);
-  }
-  setBaseEvents() {
-    window.addEventListener('scroll', () => {
-      let i = Math.round(
-          (window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * 100
-        );
-      i = Math.ceil(i*6/100);
-
-      if (i !== this.scrollLever) {
-        this.scrollLever = i;
-       this.track(EVENT_CODE[`scroll${i}` as keyof typeof EVENT_CODE]);
-        console.log(i);
-      }        
-    });
-    let count = 0;
-    const checkFbq = setInterval(() => {
-        count++;        
-
-        const isPixel = typeof (window as any).fbq == 'function';
-        const fbp = getCookie('_fbp')
-        const fbc = getCookie('_fbc')       
-        
-        
-        if (fbp || fbc) {
-          const result: Record<string, string> = {}
-          if (fbp) result.fbp = fbp;
-          if (fbc) result.fbc = fbc;
-          if (isPixel) result.pixel = 'true';          
-    
-          if (this._id) {
-            navigator.sendBeacon(
-              API_URL + '/save-cookies',
-              new Blob([JSON.stringify({ _id: this._id, result })], { type: 'application/json' }))
-              clearInterval(checkFbq);
-          }
-        }
-        if (count > 10) {
-            clearInterval(checkFbq);
-            
-        }
-    }, 1000);
-
-    
-  }
-  async init() {      
-    if (off_MyStat) {
-      console.log('off_MyStat is true');
+    if (!EVENT_CODE) {
+      console.error("EVENT_CODE is not defined");
       return;
     }
 
-    // 1. Проверяем, нет ли уже ID в sessionStorage
+    setInterval(() => this.flush(), 2_000);
+
+    // // При уходе со страницы — надёжно на мобильных
+    document.addEventListener("visibilitychange", () => {
+      if (document.visibilityState === "hidden") {
+        this.track(EVENT_CODE.outPage!.code);
+        this.flush(new Date());
+      }
+      if (document.visibilityState === "visible") {
+        this.startTime = new Date();
+        this.track(EVENT_CODE.showPage.code);
+      }
+    });
+    this.setBaseEvents();
+  }
+  setBaseEvents() {
+    window.addEventListener("scroll", () => {
+      let i = Math.round(
+        (window.scrollY /
+          (document.documentElement.scrollHeight - window.innerHeight)) *
+          100,
+      );
+      i = Math.ceil((i * 6) / 100);
+
+      if (i !== this.scrollLever) {
+        this.scrollLever = i;
+        const key = `scroll${i}` as keyof typeof EVENT_CODE;
+        if (EVENT_CODE[key]) this.track(EVENT_CODE[key]!.code);
+      }
+    });
+    let count = 0;
+    const checkFbq = setInterval(() => {
+      count++;
+
+      const isPixel = typeof (window as any).fbq == "function";
+      const fbp = getCookie("_fbp");
+      const fbc = getCookie("_fbc");
+
+      if (fbp || fbc) {
+        const result: Record<string, string> = {};
+        if (fbp) result.fbp = fbp;
+        if (fbc) result.fbc = fbc;
+        if (isPixel) result.pixel = "true";
+
+        if (this._id) {
+          navigator.sendBeacon(
+            API_URL + "/save-cookies",
+            new Blob([JSON.stringify({ _id: this._id, result })], {
+              type: "application/json",
+            }),
+          );
+          clearInterval(checkFbq);
+        }
+      }
+      if (count > 10) {
+        clearInterval(checkFbq);
+      }
+    }, 1000);
+  }
+  async init() {
+    // if (off_MyStat) {
+    //   console.log('off_MyStat is true');
+    //   return;
+    // }
+
+    this.track(EVENT_CODE.inPage.code);
+
     this._id = localStorage.getItem(STORAGE_ID);
     if (this._id) return this._id;
-    
-    const urlParams = new URLSearchParams(window.location.search);      
 
-    const isMobile = /Mobile|Android|iPhone/i.test(navigator.userAgent) ? true : false;   
+    const urlParams = new URLSearchParams(window.location.search);
 
-    const { browser, version, os } = parseUserAgent(navigator.userAgent);      
-    
     this.data = {
-      _id: '',
+      _id: "",
       createdAt: new Date(),
-      ua: `${browser}${version ? '-' + version : ''}${os}`,
-      isMobile: isMobile,
-    } as IGuest
+      userAgentString: navigator.userAgent,
+    } as IGuest;
 
     // сохраняем от куда пришёл
     if (document.referrer) {
-      const url = new URL(document.referrer)
-      this.data.referrer = url.pathname  // → "/meditation"
+      const url = new URL(document.referrer);
+      this.data.referrer = url.pathname; // → "/meditation"
     }
 
-    const isPixel = typeof (window as any).fbq == 'function';
-    
-    this.data.instagram = {
-        pixel: isPixel,          
-    }
+    this.data.instagram = {};
     const inst = this.data.instagram;
-    const comp_name = urlParams.get('comp_name');
-    const adset_name = urlParams.get('adset_name');
-    const ad_name = urlParams.get('ad_name');
+    const comp_name = urlParams.get("comp_name");
+    const adset_name = urlParams.get("adset_name");
+    const ad_name = urlParams.get("ad_name");
     if (comp_name) inst.comp_name = comp_name;
     if (adset_name) inst.adset_name = adset_name;
     if (ad_name) inst.ad_name = ad_name;
 
-    const utm_campaign = urlParams.get('utm_campaign');
-    if (utm_campaign === 'lead') {
-      inst.comp_name = 'lead';
-      inst.adset_name = 'lead-with-interests';        
-      const key1 = urlParams.get('key1');        
-      if (key1) inst.ad_name = key1;
-    }  
+    {
+      //для совместимости
+      const utm_campaign = urlParams.get("utm_campaign");
+      if (utm_campaign === "lead") {
+        inst.comp_name = "lead";
+        inst.adset_name = "lead-with-interests";
+        const key1 = urlParams.get("key1");
+        if (key1) inst.ad_name = key1;
+      }
+      if (utm_campaign === "lead2") {
+        inst.comp_name = "lead";
+        inst.adset_name = "lead-with-interests";
+        const key1 = urlParams.get("key1");
+        if (key1) inst.ad_name = key1;
+      }
+      if (!inst.comp_name) {
+        this.data.paramsString = window.location.search;
+      }
+    }
 
     // console.log(this.data);
     // return
-    
-    try {
-    // 4. Запрашиваем создание сессии
-    const response = await fetch(API_URL + '/start', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(this.data),
-    });
 
-    if (!response.ok) throw new Error('Failed to init session');
-
-    const data = await response.json();
-    
-    // 5. Сохраняем полученный от Монго ID
-    if (data._id) {
-          localStorage.setItem(STORAGE_ID, data._id);
-          return data._id;
+    {
+      if (dever_name) {
+        this.data.name = dever_name;
+      }
     }
+
+    try {
+      // 4. Запрашиваем создание сессии
+      const response = await fetch(API_URL + "/start", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(this.data),
+      });
+
+      if (!response.ok) throw new Error("Failed to init session");
+
+      const data = await response.json();
+
+      // 5. Сохраняем полученный от Монго ID
+      if (data._id) {
+        localStorage.setItem(STORAGE_ID, data._id);
+        this._id = data._id;
+
+        this.flush();
+        return data._id;
+      }
     } catch (err) {
-    console.error('Session init error:', err);
-    return null;
+      console.error("Session init error:", err);
+      return null;
     }
   }
   track(code: number) {
-    const sec = Math.floor((Date.now() - this.startTime.getTime()) / 1000)
-    if (code === EVENT_CODE.inPage) {
-      this.events.push([sec, window.location.pathname])
+    const sec = Math.round((Date.now() - this.startTime.getTime()) / 100) / 10;
+    if (code === EVENT_CODE.inPage.code) {
+      this.events.push(["t" + new Date().getTime(), window.location.pathname]);
       return;
     }
-    
-    this.events.push([sec, code])
+
+    this.events.push([sec, code]);
   }
-  flushForData(url:string,data:any) {
+  flushForData(url: string, data: any) {
     if (!this._id) return;
-    
+
     navigator.sendBeacon(
       API_URL + url,
-      new Blob([JSON.stringify({ _id: this._id, data })], { type: 'application/json' })
-    )
-  }  
-    // отправляем накопленное и чистим
-  flush(lastChange:Date|null=null) {
-    if (this.events.length === 0) return
-    
-    const payload = [...this.events]  // копия
-    this.events = []                  // очищаем сразу
-    
+      new Blob([JSON.stringify({ _id: this._id, data })], {
+        type: "application/json",
+      }),
+    );
+  }
+  // отправляем накопленное и чистим
+  flush(lastChange: Date | null = null) {
+    if (this.events.length === 0) return;
+    if (!this._id) return;
 
-    if (!this._id) {
-      this.init();
-    }
+    const payload = [...this.events]; // копия
+    this.events = []; // очищаем сразу
+
     navigator.sendBeacon(
-      API_URL + '/push-events',
-      new Blob([JSON.stringify({ _id: this._id, events: payload, lastChange })], { type: 'application/json' })
-    )
-  }  
+      API_URL + "/push-events",
+      new Blob(
+        [JSON.stringify({ _id: this._id, events: payload, lastChange })],
+        { type: "application/json" },
+      ),
+    );
+  }
 }
 const guest = new Guest();
 (window as any).guest = guest;
 
-(window as any).guestTrack = (code:number | string)=>{
-  if (typeof code === 'string') {
-    code = EVENT_CODE[code as keyof typeof EVENT_CODE];
+(window as any).guestTrack = (code: number | string) => {
+  if (typeof code === "string") {
+    code = EVENT_CODE[code as keyof typeof EVENT_CODE].code;
   }
   guest.track(code);
-}
+};
 export default guest;
-
 
 /*
 export async function sendTrackingEvent(eventName: string):Promise<boolean> {   
@@ -259,10 +299,3 @@ export async function sendMessageToAdmin(message: string):Promise<boolean> {
     
 }
 */
-
-
-
-
-
-
-

@@ -1,14 +1,14 @@
-import mongoose, { Schema } from 'mongoose'
-import { IGuest } from '../../../shared/types/IGuest.js';
+import mongoose, { Schema } from "mongoose";
+import { IGuest } from "../../../shared/types/IGuest.js";
 
-interface IGuestDocument extends Omit<IGuest, '_id'> {
-    _id:      mongoose.Types.ObjectId;
+interface IGuestDocument extends Omit<IGuest, "_id"> {
+  _id: mongoose.Types.ObjectId;
 }
 
-const GuestSchema = new Schema<IGuestDocument>({  
+const GuestSchema = new Schema<IGuestDocument>({
   createdAt: { type: Date, default: Date.now },
-  ua:        { type: String },
-  referrer:  { type: String },
+  ua: { type: String },
+  referrer: { type: String },
   tg: {
     id: { type: String },
     first_name: { type: String },
@@ -23,11 +23,11 @@ const GuestSchema = new Schema<IGuestDocument>({
     adset_name: { type: String },
     ad_name: { type: String },
   },
-  maxScroll: { type: Number },
-  duration:  { type: Number },
-  events:    { type: [[Number]] },
-})
+  userAgentString: { type: String },
+  paramsString: { type: String },
+  events: { type: [[Number]] },
+});
 
-GuestSchema.index({ 'instagram.comp_name': 1 })
+GuestSchema.index({ "instagram.comp_name": 1 });
 
-export default mongoose.model<IGuestDocument>('Guests', GuestSchema)
+export default mongoose.model<IGuestDocument>("Guests", GuestSchema);
