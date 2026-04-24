@@ -1,8 +1,6 @@
-
 import "./c-top.scss";
 
-export class CTop extends HTMLElement {     
-
+export class CTop extends HTMLElement {
   async connectedCallback() {
     this.innerHTML = `
     <div class="top">
@@ -20,16 +18,13 @@ export class CTop extends HTMLElement {
         <a href="/" class="home_anh">
             <span class="home"></span>
             <span class="name">АНАНДА ШАДРИН</span>
-
         </a>
       </div>
       
   </div>
     
-    `
-
-    
+    `;
   }
 }
 
-customElements.define('c-top', CTop);
+customElements.define("c-top", CTop);
