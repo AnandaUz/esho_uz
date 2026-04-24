@@ -6,7 +6,7 @@ const API_URL = import.meta.env.VITE_API_URL2 + "/api/tracker";
 // const off_MyStat = localStorage.getItem('off_MyStat') === 'true';
 const STORAGE_ID = "guestID";
 
-const dever_name = localStorage.getItem("good_visiter");
+// const dever_name = localStorage.getItem("good_visiter");
 
 // http://localhost:5173/meditation?comp_name=MeditationTashkent&adset_name=contact&ad_name=v-meditation-0
 // utm_source=inst&utm_campaign=lead&utm_content=s_interesami&key1=video0
@@ -73,6 +73,11 @@ class Guest {
       }
     });
     this.setBaseEvents();
+
+    window.addEventListener("pagerendered", () => {
+      this.track(EVENT_CODE.outPage.code);
+      this.track(EVENT_CODE.inPage.code);
+    });
   }
   setBaseEvents() {
     window.addEventListener("scroll", () => {
@@ -124,15 +129,14 @@ class Guest {
     //   return;
     // }
 
-    this.track(EVENT_CODE.inPage.code);
+    // this.track(EVENT_CODE.inPage.code);
 
     this._id = localStorage.getItem(STORAGE_ID);
-    if (this._id) return this._id;
 
     const urlParams = new URLSearchParams(window.location.search);
 
     this.data = {
-      _id: "",
+      _id: this._id || "",
       createdAt: new Date(),
       userAgentString: navigator.userAgent,
     } as IGuest;
@@ -169,15 +173,6 @@ class Guest {
       }
       if (!inst.comp_name) {
         this.data.paramsString = window.location.search;
-      }
-    }
-
-    // console.log(this.data);
-    // return
-
-    {
-      if (dever_name) {
-        this.data.name = dever_name;
       }
     }
 
@@ -252,50 +247,3 @@ const guest = new Guest();
   guest.track(code);
 };
 export default guest;
-
-/*
-export async function sendTrackingEvent(eventName: string):Promise<boolean> {   
-    const page_path = window.location.pathname;
-    const message = `${getVisiterId()} 🔅 ${eventName} 🔅 ${page_path}`
-    await fetch(import.meta.env.VITE_API_URL + '/track', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({message})
-    }).catch(err =>  {
-      console.log('Tracking error:', err);
-      return false;
-    });
-    return true;
-}
-export async function sendTrackingMessage(message: string):Promise<boolean> {       
-    await fetch(import.meta.env.VITE_API_URL + '/track', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({message})
-    }).catch(err =>  {
-      console.log('Tracking error:', err);
-      return false;
-    });
-    return true;
-}
-export async function sendMessageToAdmin(message: string):Promise<boolean> {       
-    await fetch(import.meta.env.VITE_API_URL + '/track_admin', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({message})
-    }).catch(err =>  {
-      console.log('Tracking error:', err);
-      return false;
-    });
-    return true;
-}
-
-
-
-
-{
-
-    let count = 0;
-    
-}
-*/
