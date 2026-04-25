@@ -47,6 +47,7 @@ export const EVENT_CODE = {
 type TEventItem = [number | string, number | string];
 class Guest {
   private _id: string | null = null;
+  private isFirstInPage = true;
 
   private data: IGuest | null = null;
   startTime: Date = new Date();
@@ -59,12 +60,12 @@ class Guest {
       return;
     }
 
-    setInterval(() => this.flush(), 2_000);
+    setInterval(() => this.flush(), 3_000);
 
     // // При уходе со страницы — надёжно на мобильных
     document.addEventListener("visibilitychange", () => {
       if (document.visibilityState === "hidden") {
-        this.track(EVENT_CODE.outPage!.code);
+        this.track(EVENT_CODE.outPage.code);
         this.flush(new Date());
       }
       if (document.visibilityState === "visible") {
@@ -75,7 +76,11 @@ class Guest {
     this.setBaseEvents();
 
     window.addEventListener("pagerendered", () => {
-      this.track(EVENT_CODE.outPage.code);
+      if (this.isFirstInPage) {
+        this.isFirstInPage = false;
+      } else {
+        this.track(EVENT_CODE.outPage.code);
+      }
       this.track(EVENT_CODE.inPage.code);
     });
   }
