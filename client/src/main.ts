@@ -1,15 +1,16 @@
 import guest from "@/services/tracker.services";
 
-const off_MyStat = localStorage.getItem("off_MyStat") === "true";
-const STORAGE_ID = "good_visiter";
+// const off_MyStat = localStorage.getItem("off_MyStat") === "true";
+// const STORAGE_ID = "good_visiter";
 
 guest.init();
-
+/*
 declare global {
   interface Window {
     timeStart: Date;
   }
 }
+
 if (!off_MyStat) {
   trackVisit();
   // const timers = [
@@ -65,7 +66,7 @@ if (!off_MyStat) {
   //     }
   // }, 1000);
 }
-
+*/
 window.addEventListener("load", () => {});
 export async function sendTrackingEvent(eventName: string): Promise<boolean> {
   const page_path = window.location.pathname;
