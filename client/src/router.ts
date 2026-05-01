@@ -22,6 +22,8 @@ const routes: Routes = {
     import("@pages/meditation/meditation").then((m) =>
       m.meditationPage(params),
     ),
+  "/location": (params) =>
+    import("@pages/location/location").then((m) => m.locationPage(params)),
 };
 
 function matchRoute(

@@ -1,0 +1,12 @@
+@use "@styles/breakpoints";
+
+@use "../meditation/meditation.scss";
+
+.location-page {
+  .location {
+    h3 {
+      margin: 15px 0 10px 15px;
+      padding: 0;
+    }
+  }
+}
