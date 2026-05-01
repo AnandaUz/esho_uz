@@ -79,4 +79,15 @@ export async function render(): Promise<void> {
   } catch (e) {
     console.error("Ошибка роутера:", e);
   }
+  scrollToHash();
+}
+function scrollToHash() {
+  const hash = window.location.hash;
+  if (!hash) return;
+
+  // небольшая задержка на случай если DOM ещё не готов
+  requestAnimationFrame(() => {
+    const el = document.querySelector(hash);
+    el?.scrollIntoView({ behavior: "smooth" });
+  });
 }
