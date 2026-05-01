@@ -9,20 +9,10 @@ export const guidePage: Page = () => {
     init() {
       const btn = document.querySelector(".open_pdf");
       btn?.addEventListener("click", () => {
-        // fbq('track', 'Lead', {value: 1.00, currency: 'USD'});
         const track = (window as any).guestTrack;
         if (track) {
           track("goalBtnGaude");
         }
-
-        //         const fbp = getCookie('_fbp')
-        //         const fbc = getCookie('_fbc')
-
-        //             const message = `${getVisiterId()} 🤖🤖🤖 Скачали гайд
-        // fbp:${fbp}
-        // fbc:${fbc}`
-
-        //               sendTrackingMessage(message);
       });
     },
     title: "Гайд",

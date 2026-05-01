@@ -1,15 +1,17 @@
-.meditation {  
+@use "@styles/breakpoints";
+
+.meditation {
   .cont {
-    padding: 0 ;
+    padding: 0;
   }
-  section { 
+  section {
     padding: 10px 15px 15px;
   }
   .bl-00 {
     padding: 0 15px 15px;
     margin: 0;
   }
-  
+
   p {
     margin: 0 0 4px;
     text-indent: 10px;
@@ -20,16 +22,55 @@
   }
 
   .bl-01 {
-    background: rgba(155, 218, 255, 0.247) url('@assets/uzor.svg') no-repeat top center;
-        background-size: 745px, cover;
+    background: rgba(155, 218, 255, 0.247) url("@assets/uzor.svg") no-repeat top
+      center;
+    background-size: 745px, cover;
 
-    background-position: right -72px center, 0 0;
+    background-position:
+      right -72px center,
+      0 0;
     background-repeat: no-repeat;
   }
   .location {
-        background: #91ffdc40;
+    background: #91ffdc40;
+    position: relative;
+    padding: 0;
+
+    h3 {
+      color: #ffffff;
+      text-shadow: 1px 1px 13px #000;
+    }
+
+    .img-cover {
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      left: 0;
+      top: 0;
+      z-index: 0;
+      overflow: hidden;
+
+      img {
+        width: 157%;
+        height: 100%;
+        object-fit: cover;
+
+        @include breakpoints.tablet {
+          width: 100%;
+        }
+      }
+    }
+
+    .inner-cover {
+      padding: 15px;
+      position: relative;
+      z-index: 1;
+      background: rgb(0 189 103 / 37%);
+      color: #ffffff;
+    }
+    --shadow-color: #003d13;
     a {
-      background-image: url('@/assets/ico-point.svg');
+      background-image: url("@/assets/ico-point.svg");
       background-repeat: no-repeat;
       background-position: center left 12px;
       background-size: 40px 44px;
@@ -40,30 +81,34 @@
       padding: 0 0 0 71px;
       font-size: 23px;
       margin: 5px 0;
-      color: #c80a18;
-
+      color: #ff0012;
+      text-shadow: 0px 4px 13px var(--shadow-color);
     }
     .address {
       font-size: 17px;
       text-indent: 0;
       padding: 5px 10px;
+      color: #ffffff;
+      text-shadow: 1px 1px 13px var(--shadow-color);
     }
     .comment {
       font-size: 16px;
       text-indent: 0;
       padding: 10px;
-      color: #032963;
+      color: #ffffff;
+      text-shadow: 1px 1px 13px var(--shadow-color);
     }
   }
   .litte-text {
     padding: 2px 0 5px;
   }
   .bl-03 {
-    background: rgb(255 200 187) url('@assets/uzor-2.svg');
+    background: rgb(255 200 187) url("@assets/uzor-2.svg");
     background-size: 313px;
-    background-position: right -72px center, 0 0;
+    background-position:
+      right -72px center,
+      0 0;
   }
-  
 }
 .time {
   color: rgba(221, 38, 6, 0.8);
@@ -76,5 +121,3 @@
 .color-orange {
   color: #c80a18;
 }
-
-

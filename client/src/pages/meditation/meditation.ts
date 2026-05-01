@@ -10,7 +10,15 @@ export const meditationPage: Page = () => {
       "{{VITE_TGBOT_MEDITATION_URL}}",
       import.meta.env.VITE_TGBOT_MEDITATION_URL,
     ),
-    init() {},
+    init() {
+      const btn_maps = document.querySelector(".btn-maps") as HTMLAnchorElement;
+      btn_maps.addEventListener("click", () => {
+        const track = (window as any).guestTrack;
+        if (track) {
+          track("btnMaps");
+        }
+      });
+    },
     title: "Медитация",
   };
 };
