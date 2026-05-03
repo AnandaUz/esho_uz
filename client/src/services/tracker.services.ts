@@ -1,19 +1,27 @@
-import type { IGuest } from "@shared/types/IGuest";
-import { getCookie } from "./tracker.tools";
+const API_URL = import.meta.env.VITE_API_URL + "/api/tracker";
 
-const API_URL = import.meta.env.VITE_API_URL2 + "/api/tracker";
-// const API_URL = 'http://localhost:8080' + '/api/tracker';
-// const off_MyStat = localStorage.getItem('off_MyStat') === 'true';
 const STORAGE_ID = "guestID";
-
-// const dever_name = localStorage.getItem("good_visiter");
 
 // http://localhost:5173/meditation?comp_name=MeditationTashkent&adset_name=contact&ad_name=v-meditation-0
 // utm_source=inst&utm_campaign=lead&utm_content=s_interesami&key1=video0
 // ?utm_source=inst&utm_campaign=lead2&utm_content=s_interesami2&key1=video1&utm_medium=paid&utm_id=6925035325113&utm_term=6925035324713&fbclid=PAZXh0bgNhZW0BMABhZGlkAAAGTFzD8hFzcnRjBmFwcF9pZA81NjcwNjczNDMzNTI0MjcAAadDPj2gttDHkTPYLkz521tBg23QQSwDhKY0Z78F72VCfqTMAeGP795Nu3vFFA_aem_eJZxO5rWljtYD03HkyiaUQ
+// http://localhost:5173/meditation?comp_name=MeditationTashkent&adset_name=contact&ad_name=v-meditation-0
 
-//const path =
+// interface IGuest {
+//   _id: string; // session id
+//   createdAt: Date;
+//   lastChange: Date;
+//   referrer?: string;
+//   userAgentString?: string;
 
+//   urlParamsString?: string;
+//   events?: [number | string, number | string][]; // [[время, код], ...]
+//   tags?: number[];
+// }
+function getCookie(name: string): string {
+  const match = document.cookie.match(new RegExp("(^| )" + name + "=([^;]+)"));
+  return match && match[2] ? match[2] : "";
+}
 interface IEventCodeItem {
   name?: string;
   code: number;
@@ -22,34 +30,40 @@ interface IEventCodeItem {
   class?: string;
 }
 export const EVENT_CODE = {
-  scroll0: { code: 1, title: "0%", class: "scroll s0" },
-  scroll1: { code: 2, title: "16%", class: "scroll s1" },
-  scroll2: { code: 3, title: "33%", class: "scroll s2" },
-  scroll3: { code: 4, title: "50%", class: "scroll s3" },
-  scroll4: { code: 5, title: "66%", class: "scroll s4" },
-  scroll5: { code: 6, title: "83%", class: "scroll s5" },
-  scroll6: { code: 7, title: "100%", class: "scroll s6" },
-  inPage: { code: 8, title: "Вход на страницу", class: "page-in" },
-  outPage: { code: 9, title: "Выход со страницы", class: "page-out" },
+  scroll0: { code: 1, title: "0%" },
+  scroll1: { code: 2, title: "16%" },
+  scroll2: { code: 3, title: "33%" },
+  scroll3: { code: 4, title: "50%" },
+  scroll4: { code: 5, title: "66%" },
+  scroll5: { code: 6, title: "83%" },
+  scroll6: { code: 7, title: "100%" },
+  inPage: { code: 8, title: "Вход на страницу" },
+  outPage: { code: 9, title: "Выход со страницы" },
   goalBtnClick: {
     code: 10,
     title: "Клик по кнопке цели",
-    class: "goalBtnClick",
   },
   showPage: { code: 11, title: "Показ страницы", class: "show-page" },
   goalBtnGaude: {
     code: 12,
     title: "Открыли гайд",
-    class: "goalBtnGaude",
   },
 } as const satisfies Record<string, IEventCodeItem>;
 
 type TEventItem = [number | string, number | string];
+interface IInitData {
+  _id?: string | undefined;
+  createdAt?: Date;
+  userAgentString?: string;
+  urlParamsString?: string;
+  referrer?: string;
+  projectId?: string;
+}
 class Guest {
   private _id: string | null = null;
   private isFirstInPage = true;
 
-  private data: IGuest | null = null;
+  // private data = {};
   startTime: Date = new Date();
   events: TEventItem[] = [];
   scrollLever: number = 0;
@@ -128,78 +142,46 @@ class Guest {
       }
     }, 1000);
   }
+
   async init() {
-    // if (off_MyStat) {
-    //   console.log('off_MyStat is true');
-    //   return;
-    // }
-
-    // this.track(EVENT_CODE.inPage.code);
-
-    this._id = localStorage.getItem(STORAGE_ID);
-
     const urlParams = new URLSearchParams(window.location.search);
+    let guestID = urlParams.get("g");
+    if (!guestID) guestID = localStorage.getItem(STORAGE_ID);
 
-    this.data = {
-      _id: this._id || "",
+    this._id = guestID;
+
+    const data: IInitData = {
+      _id: this._id || undefined,
       createdAt: new Date(),
       userAgentString: navigator.userAgent,
-    } as IGuest;
+      urlParamsString: window.location.search.slice(1),
+      projectId: (window as any).projectID,
+    };
 
-    // сохраняем от куда пришёл
+    console.log(data);
+
     if (document.referrer) {
       const url = new URL(document.referrer);
-      this.data.referrer = url.pathname; // → "/meditation"
-    }
-
-    this.data.instagram = {};
-    const inst = this.data.instagram;
-    const comp_name = urlParams.get("comp_name");
-    const adset_name = urlParams.get("adset_name");
-    const ad_name = urlParams.get("ad_name");
-    if (comp_name) inst.comp_name = comp_name;
-    if (adset_name) inst.adset_name = adset_name;
-    if (ad_name) inst.ad_name = ad_name;
-
-    {
-      //для совместимости
-      const utm_campaign = urlParams.get("utm_campaign");
-      if (utm_campaign === "lead") {
-        inst.comp_name = "lead";
-        inst.adset_name = "lead-with-interests";
-        const key1 = urlParams.get("key1");
-        if (key1) inst.ad_name = key1;
-      }
-      if (utm_campaign === "lead2") {
-        inst.comp_name = "lead";
-        inst.adset_name = "lead-with-interests";
-        const key1 = urlParams.get("key1");
-        if (key1) inst.ad_name = key1;
-      }
-      if (!inst.comp_name) {
-        this.data.paramsString = window.location.search;
-      }
+      data.referrer = url.pathname;
     }
 
     try {
-      // 4. Запрашиваем создание сессии
       const response = await fetch(API_URL + "/start", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(this.data),
+        body: JSON.stringify(data),
       });
 
       if (!response.ok) throw new Error("Failed to init session");
 
-      const data = await response.json();
+      const newData = await response.json();
 
-      // 5. Сохраняем полученный от Монго ID
-      if (data._id) {
-        localStorage.setItem(STORAGE_ID, data._id);
-        this._id = data._id;
+      if (newData._id) {
+        localStorage.setItem(STORAGE_ID, newData._id);
+        this._id = newData._id;
 
         this.flush();
-        return data._id;
+        return newData._id;
       }
     } catch (err) {
       console.error("Session init error:", err);
@@ -212,7 +194,6 @@ class Guest {
       this.events.push(["t" + new Date().getTime(), window.location.pathname]);
       return;
     }
-
     this.events.push([sec, code]);
   }
   flushForData(url: string, data: any) {
@@ -243,6 +224,7 @@ class Guest {
   }
 }
 const guest = new Guest();
+guest.init();
 (window as any).guest = guest;
 
 (window as any).guestTrack = (code: number | string) => {
@@ -251,4 +233,3 @@ const guest = new Guest();
   }
   guest.track(code);
 };
-export default guest;

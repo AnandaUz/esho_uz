@@ -1,9 +1,9 @@
-import guest from "@/services/tracker.services";
+// import guest from "@/services/tracker.services";
 
 // const off_MyStat = localStorage.getItem("off_MyStat") === "true";
 // const STORAGE_ID = "good_visiter";
 
-guest.init();
+// guest.init();
 /*
 declare global {
   interface Window {

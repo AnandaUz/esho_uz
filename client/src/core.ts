@@ -1,5 +1,5 @@
 import "@styles/style.scss";
-import "./main.ts";
+
 import { render } from "./router";
 
 import { renderHeader } from "./components/header"; // добавить
