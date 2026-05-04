@@ -7,17 +7,8 @@ const STORAGE_ID = "guestID";
 // ?utm_source=inst&utm_campaign=lead2&utm_content=s_interesami2&key1=video1&utm_medium=paid&utm_id=6925035325113&utm_term=6925035324713&fbclid=PAZXh0bgNhZW0BMABhZGlkAAAGTFzD8hFzcnRjBmFwcF9pZA81NjcwNjczNDMzNTI0MjcAAadDPj2gttDHkTPYLkz521tBg23QQSwDhKY0Z78F72VCfqTMAeGP795Nu3vFFA_aem_eJZxO5rWljtYD03HkyiaUQ
 // http://localhost:5173/meditation?comp_name=MeditationTashkent&adset_name=contact&ad_name=v-meditation-0
 
-// interface IGuest {
-//   _id: string; // session id
-//   createdAt: Date;
-//   lastChange: Date;
-//   referrer?: string;
-//   userAgentString?: string;
+// https://esho.uz/meet?comp_name=MasterMind&adset_name=26-05-04-mastermaind-contact-with-interests-newPixel&ad_name=video0
 
-//   urlParamsString?: string;
-//   events?: [number | string, number | string][]; // [[время, код], ...]
-//   tags?: number[];
-// }
 function getCookie(name: string): string {
   const match = document.cookie.match(new RegExp("(^| )" + name + "=([^;]+)"));
   return match && match[2] ? match[2] : "";
@@ -63,7 +54,6 @@ class Guest {
   private _id: string | null = null;
   private isFirstInPage = true;
 
-  // private data = {};
   startTime: Date = new Date();
   events: TEventItem[] = [];
   scrollLever: number = 0;
@@ -76,7 +66,6 @@ class Guest {
 
     setInterval(() => this.flush(), 3_000);
 
-    // // При уходе со страницы — надёжно на мобильных
     document.addEventListener("visibilitychange", () => {
       if (document.visibilityState === "hidden") {
         this.track(EVENT_CODE.outPage.code);
@@ -157,8 +146,6 @@ class Guest {
       urlParamsString: window.location.search.slice(1),
       projectId: (window as any).projectID,
     };
-
-    console.log(data);
 
     if (document.referrer) {
       const url = new URL(document.referrer);
