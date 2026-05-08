@@ -7,7 +7,8 @@ const STORAGE_ID = "guestID";
 // ?utm_source=inst&utm_campaign=lead2&utm_content=s_interesami2&key1=video1&utm_medium=paid&utm_id=6925035325113&utm_term=6925035324713&fbclid=PAZXh0bgNhZW0BMABhZGlkAAAGTFzD8hFzcnRjBmFwcF9pZA81NjcwNjczNDMzNTI0MjcAAadDPj2gttDHkTPYLkz521tBg23QQSwDhKY0Z78F72VCfqTMAeGP795Nu3vFFA_aem_eJZxO5rWljtYD03HkyiaUQ
 // http://localhost:5173/meditation?comp_name=MeditationTashkent&adset_name=contact&ad_name=v-meditation-0
 
-// https://esho.uz/meet?comp_name=MasterMind&adset_name=26-05-04-mastermaind-contact-with-interests-newPixel&ad_name=video0
+// https://esho.uz/meet?comp_name=MasterMind&adset_name=26-05-04-mastermaind-contact-with-interests-newPixel&ad_name=video-0
+//comp_name=MasterMind&adset_name=26-05-04-mastermaind-contact-with-interests-newPixel&ad_name=video-1
 
 function getCookie(name: string): string {
   const match = document.cookie.match(new RegExp("(^| )" + name + "=([^;]+)"));
