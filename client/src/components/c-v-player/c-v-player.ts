@@ -91,7 +91,6 @@ export class CVPlayer extends HTMLElement {
 
   private play(): void {
     this.video.play().catch(() => {});
-    this.showHint("play");
   }
 
   private togglePlayback(): void {
@@ -99,26 +98,9 @@ export class CVPlayer extends HTMLElement {
 
     if (this.video.paused) {
       this.video.play();
-      this.showHint("play");
     } else {
       this.video.pause();
-      this.showHint("pause");
     }
-  }
-
-  // ─── Hint ───────────────────────────────────────────────
-
-  private showHint(state: "play" | "pause"): void {
-    const svg = this.hintIcon.querySelector("svg") as SVGElement;
-
-    svg.innerHTML =
-      state === "play"
-        ? '<polygon points="5,3 19,12 5,21"/>'
-        : '<rect x="5" y="3" width="4" height="18"/><rect x="15" y="3" width="4" height="18"/>';
-
-    this.classList.add("show-hint");
-    if (this.hintTimer) clearTimeout(this.hintTimer);
-    this.hintTimer = setTimeout(() => this.classList.remove("show-hint"), 700);
   }
 
   // ─── Progress & custom events ───────────────────────────
