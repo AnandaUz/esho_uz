@@ -4,7 +4,7 @@ import "./location.scss";
 import html from "./location.html?raw";
 import "@components/top/c-top";
 import "@/components/c-anh-to_bot";
-// import "@components/c-yt-player/c-yt-player";
+import "@components/c-v-player/c-v-player";
 
 export const locationPage: Page = () => {
   return {

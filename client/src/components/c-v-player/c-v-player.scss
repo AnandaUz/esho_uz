@@ -1,0 +1,81 @@
+// c-v-player.scss
+
+c-v-player {
+  // ─── Переменные ─────────────────────────────────────────
+  --vp-preview-height: 120px;
+  --vp-bg: #E5FFF3;
+  --vp-accent: #ffffff;
+
+  --vp-transition-expand: 0.55s cubic-bezier(0.4, 0, 0.2, 1);
+
+  // ─── Блок ───────────────────────────────────────────────
+  display: block;
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  background: var(--vp-bg);
+  border-radius: 4px;
+  cursor: pointer;
+  height: var(--vp-preview-height);
+  max-width: 700px;
+
+  transition:
+    height var(--vp-transition-expand),
+    border-radius var(--vp-transition-expand);
+
+  &.is-expanded {
+    height: var(--vp-natural-height, 56.25vw);
+    border-radius: 0;
+    cursor: default;
+
+    .vp-preview {
+
+      display: none;
+
+    }
+  }
+
+  // ─── Плашка-превью ──────────────────────────────────────
+  .vp-preview {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+
+    .is-expanded & {
+      display: none;
+    }
+  }
+
+  .vp-poster-thumb {
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
+  }
+
+  // ─── Прогресс-полоска на плашке ─────────────────────────
+  .vp-strip {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 2px;
+    width: 0%;
+    background: var(--vp-accent);
+    z-index: 3;
+    transition: width 0.1s linear;
+  }
+
+  // ─── Видео ──────────────────────────────────────────────
+  .vp-video {
+    width: 100%;
+    // height: 100%;
+    object-fit: contain;
+    display: block;
+
+    .is-expanded & {}
+  }
+
+  // ─── Адаптив ────────────────────────────────────────────
+  @media (max-width: 600px) {
+    --vp-preview-height: 134px;
+  }
+}
