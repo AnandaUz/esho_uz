@@ -44,7 +44,6 @@ export class CVPlayer extends HTMLElement {
         class="vp-video"
         playsinline
         preload="metadata"
-        ${poster ? `poster="${poster}"` : ""}
       >
         <source src="${src}" type="video/mp4">
       </video>      
@@ -74,6 +73,7 @@ export class CVPlayer extends HTMLElement {
 
     const naturalHeight = this.offsetWidth * (14 / 9);
     this.style.setProperty("--vp-natural-height", `${naturalHeight}px`);
+    this.style.setProperty("height", `${naturalHeight}px`);
 
     this.classList.add("is-expanded");
 
@@ -127,6 +127,10 @@ export class CVPlayer extends HTMLElement {
     if (!this.completeFired && ratio >= 0.95) {
       this.completeFired = true;
       this.emit("vp:complete");
+    }
+    if (ratio >= 1) {
+      this.classList.remove("is-expanded");
+      this.style.setProperty("height", "");
     }
   }
 

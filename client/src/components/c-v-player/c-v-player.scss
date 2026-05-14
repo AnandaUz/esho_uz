@@ -1,37 +1,36 @@
-// c-v-player.scss
+@use "@/styles/breakpoints";
 
 c-v-player {
   // ─── Переменные ─────────────────────────────────────────
   --vp-preview-height: 120px;
-  --vp-bg: #E5FFF3;
-  --vp-accent: #ffffff;
-
   --vp-transition-expand: 0.55s cubic-bezier(0.4, 0, 0.2, 1);
 
   // ─── Блок ───────────────────────────────────────────────
-  display: block;
+  display: flex;
+  // align-items: center;
+  flex-direction: column;
+  justify-content: start;
   position: relative;
+  margin: 0 auto;
   width: 100%;
+  max-width: 450px;
+
   overflow: hidden;
-  background: var(--vp-bg);
-  border-radius: 4px;
   cursor: pointer;
   height: var(--vp-preview-height);
-  max-width: 700px;
+  // max-width: 700px;
 
   transition:
     height var(--vp-transition-expand),
     border-radius var(--vp-transition-expand);
 
   &.is-expanded {
-    height: var(--vp-natural-height, 56.25vw);
+    // height: var(--vp-natural-height, 56.25vw);
     border-radius: 0;
     cursor: default;
 
     .vp-preview {
-
       display: none;
-
     }
   }
 
@@ -39,7 +38,8 @@ c-v-player {
   .vp-preview {
     display: flex;
     align-items: center;
-    justify-content: flex-start;
+    width: 100%;
+    height: 100%;
 
     .is-expanded & {
       display: none;
@@ -47,7 +47,7 @@ c-v-player {
   }
 
   .vp-poster-thumb {
-    height: 100%;
+    // height: 100%;
     width: 100%;
     object-fit: cover;
   }
@@ -59,7 +59,7 @@ c-v-player {
     left: 0;
     height: 2px;
     width: 0%;
-    background: var(--vp-accent);
+    background: #fffa;
     z-index: 3;
     transition: width 0.1s linear;
   }
@@ -70,12 +70,13 @@ c-v-player {
     // height: 100%;
     object-fit: contain;
     display: block;
+    max-width: 400px;
 
     // .is-expanded & {}
   }
 
   // ─── Адаптив ────────────────────────────────────────────
-  @media (max-width: 600px) {
+  @include breakpoints.tablet {
     --vp-preview-height: 134px;
   }
 }
