@@ -8,6 +8,7 @@ const STORAGE_ID = "guestID";
 // http://localhost:5173/meditation?comp_name=MeditationTashkent&adset_name=contact&ad_name=v-meditation-0
 
 // https://esho.uz/meet?comp_name=MasterMind&adset_name=26-05-04-mastermaind-contact-with-interests-newPixel&ad_name=video-0
+//comp_name=MeditationTashkent&adset_name=CM-contact-with-interests-05_05_26&ad_name=v-meditation-0
 //comp_name=MasterMind&adset_name=26-05-04-mastermaind-contact-with-interests-newPixel&ad_name=video-1
 
 function getCookie(name: string): string {
@@ -176,7 +177,7 @@ class Guest {
       return null;
     }
   }
-  track(code: number) {
+  track(code: number | string) {
     const sec = Math.round((Date.now() - this.startTime.getTime()) / 100) / 10;
     if (code === EVENT_CODE.inPage.code) {
       this.events.push(["t" + new Date().getTime(), window.location.pathname]);
@@ -217,7 +218,8 @@ guest.init();
 
 (window as any).guestTrack = (code: number | string) => {
   if (typeof code === "string") {
-    code = EVENT_CODE[code as keyof typeof EVENT_CODE].code;
+    const i = EVENT_CODE[code as keyof typeof EVENT_CODE];
+    if (i) code = i.code;
   }
   guest.track(code);
 };

@@ -29,6 +29,25 @@ export class CVPlayer extends HTMLElement {
 
     this.render(src, poster);
     this.bindEvents();
+
+    this.addEventListener("vp:start", () => {
+      const track = (window as any).guestTrack;
+      if (track) {
+        track("v:start");
+      }
+    });
+    this.addEventListener("vp:half", () => {
+      const track = (window as any).guestTrack;
+      if (track) {
+        track("v:half");
+      }
+    });
+    this.addEventListener("vp:complete", () => {
+      const track = (window as any).guestTrack;
+      if (track) {
+        track("v:complete");
+      }
+    });
   }
 
   // ─── Render ─────────────────────────────────────────────
@@ -59,7 +78,7 @@ export class CVPlayer extends HTMLElement {
     const preview = this.querySelector(".vp-preview") as HTMLElement;
 
     preview.addEventListener("click", () => {
-      console.log(this.video.paused);
+      // console.log(this.video.paused);
       this.expand();
     });
     this.video.addEventListener("click", () => this.togglePlayback());
